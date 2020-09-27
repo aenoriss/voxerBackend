@@ -1,6 +1,6 @@
 var express = require('express');
-var router = express.Router();
 var fetch = require('../node_modules/node-fetch');
+var router = express.Router();
 let token;
 const request = require('request');
 const WebSocket = require("ws");
@@ -8,32 +8,26 @@ let socketRofex;
 const base_url = "https://api.remarkets.primary.com.ar/";
 const base_url_ws = "wss://api.remarkets.primary.com.ar/";
 let simbolosProd = [];
-
 let motherofalldata = [];
 let array = [];
 ///////////////////////
-
 
 const saveAlgo = async (p) => {
     motherofalldata.push(p);
     // console.log(motherofalldata)
 }
 
-
 /* GET users listing. */
-router.get('/', async function (req, res, next) {
+router.get('/all', async function (req, res, next) {
 
-    let wasd ="asdasd"
     getAll().then( respuesta => {
         if(motherofalldata != []){
             array= motherofalldata;
             setTimeout(()=>{
                 res.send(motherofalldata)
-            },[7000]);
+            },[3000]);
         }   
-    }   );
-    
-
+    }   );    
 });
 
 // const token = 'EvdjIIAWqHRA47DGjUkF82FQDJGVZdytxRKQfUf7Xv8=';
@@ -68,8 +62,8 @@ const getAll = async (req, res) => {
             }
         });
         const data = await response.json();
-        console.log(data.instruments,"dataaa xddd")
-        console.log(data.instruments);
+        //console.log(data.instruments,"dataaa xddd")
+        //console.log(data.instruments);
         data.instruments.forEach( item => {
          
             simbolosProd.push({"symbol":item.instrumentId.symbol, marketId: item.instrumentId.marketId})
@@ -93,6 +87,109 @@ const getAll = async (req, res) => {
         });
     }
 }
+
+// GET Winners & Losers
+// winOrLose = bool
+
+/*
+router.get('/winnersAndLosers', async function (req, res, next, winOrLose) {    
+
+    const mockeoDelOrto = [
+        {
+            name : "a",
+            price : 2,
+            opPrice : 1,
+            rend : opPrice / price,
+        },
+        {
+            name : "b",
+            price : 3,
+            opPrice : 2,
+            rend : opPrice / price,
+        },
+        {
+            name : "c",
+            price : 1,
+            opPrice : 3,
+            rend : opPrice / price,
+        },
+        {
+            name : "d",
+            price : 7,
+            opPrice : 4,
+            rend : opPrice / price,
+        },
+        {
+            name : "e",
+            price : 6,
+            opPrice : 5,
+            rend : opPrice / price,
+        },
+        {
+            name : "f",
+            price : 5,
+            opPrice : 6,
+            rend : opPrice / price,
+        },
+        {
+            name : "g",
+            price : 9,
+            opPrice : 7,
+            rend : opPrice / price,
+        },
+        {
+            name : "h",
+            price : 3,
+            opPrice : 8,
+            rend : opPrice / price,
+        },
+        {
+            name : "i",
+            price : 7,
+            opPrice : 9,
+            rend : opPrice / price,
+        },
+        {
+            name : "j",
+            price : 5,
+            opPrice : 10,
+            rend : opPrice / price,
+        },
+    ];
+
+    getAll().then( respuesta => {
+        if(mockeoDelOrto != []){  
+
+            arr = mockeoDelOrto;
+
+            const bubbleSort = arr => {
+                const l = arr.length;
+                for (let i = 0; i < l; i++ ) {
+                    for (let j = 0; j < l - 1 - i; j++ ) {
+                        if ( arr[ j ].rend > arr[ j + 1 ].rend ) {
+                            [ arr[ j ].rend, arr[ j + 1 ].rend ] = [ arr[ j + 1 ].rend, arr[ j ].rend ];
+                        }
+                    }
+                }
+            
+                return arr;
+            };
+            
+
+            /*if(winOrLose){ 
+                mockeoDelOrto.forEach(element => {                    
+                }); 
+            } else {
+            }
+            console.log(bubbleSort)
+            setTimeout(()=>{                
+                res.send("asd")
+            },[3000]);
+        }   
+    }   );    
+});
+*/
+
 
 const rofex_iniciarWS =  (pUsuario, pClave, pCallback) => {
     try {

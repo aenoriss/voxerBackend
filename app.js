@@ -1,5 +1,3 @@
-
-
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -22,10 +20,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//ROUTEOS
+// ROUTEOS
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/instruments', instrumentsRouter);
+app.use('/instruments/all', instrumentsRouter);
+app.use('/instruments/winnersAndLosers', instrumentsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
