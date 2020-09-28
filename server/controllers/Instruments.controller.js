@@ -1,6 +1,4 @@
-var express = require('express');
-var fetch = require('../node_modules/node-fetch');
-var router = express.Router();
+import fetch from 'node-fetch'
 let token;
 const request = require('request');
 const WebSocket = require("ws");
@@ -18,8 +16,7 @@ const saveAlgo = async (p) => {
 }
 
 /* GET users listing. */
-router.get('/all', async function (req, res, next) {
-
+export const getInstruments = async (req, res) => {
     getAll().then( respuesta => {
         if(motherofalldata != []){
             array= motherofalldata;
@@ -27,8 +24,17 @@ router.get('/all', async function (req, res, next) {
                 res.send(motherofalldata)
             },[3000]);
         }   
-    }   );    
-});
+    }   );  
+}
+
+// GET 
+export const getCompleto = async (req, res) => {
+
+}
+
+
+
+
 
 // const token = 'EvdjIIAWqHRA47DGjUkF82FQDJGVZdytxRKQfUf7Xv8=';
 
@@ -250,5 +256,3 @@ function suscribir(datos){
         // console.log("Conectado con socketRofex", JSON.stringify(datos), socketRofex.readyState);
     }
    }
-
-module.exports = router;
