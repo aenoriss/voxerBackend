@@ -6,8 +6,8 @@ import { getInstruments,
          } from '../controllers/Instruments.controller';
 
 //http://localhost:4000/api/instruments/all
-router.get('/all', getInstrumentsProbando);
-router.get('/probando', getInstrumentsProbando);
+router.get('/all', getInstruments);
+//router.get('/probando', getInstrumentsProbando);
 
 
 export default router;

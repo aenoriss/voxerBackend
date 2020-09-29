@@ -8,6 +8,7 @@ const base_url_ws = "wss://api.remarkets.primary.com.ar/";
 let simbolosProd = [];
 let motherofalldata = [];
 let array = [];
+let auxArray = [];
 ///////////////////////
 
 const saveAlgo = async (p) => {
@@ -15,41 +16,79 @@ const saveAlgo = async (p) => {
     // console.log(motherofalldata)
 }
 
-/* GET users listing. */
+/* GET users listing. 
 export const getInstrumentsProbando = async (req, res) => {
-    getInstruments().then(()=>{
-            array.map( (item, index) => {
-            console.log(item.marketData)
-        } )
+    getInstruments().then(() => {
+        array.map((item, index) => {
+            // console.log(item.marketData)
+        })
     }
     )
 }
+*/
 
- 
+/*
+BI: Bid 
+OF: Offer 
+LA: Last, último precio operado 
+OP: Open, precio de apertura 
+CL: Close, precio de cierre 
+SE: Settlement
+OI: Open Interest 
+*/
+
 
 export const getInstruments = async (req, res) => {
-    getAll().then(respuesta => {
+    getAll().then(() => {
         if (motherofalldata != []) {
             setTimeout(() => {
                 array = motherofalldata;
+
+                array.forEach(item => {
+                    if (item.marketData.LA != null && item.marketData.OP != null) {
+                        const objetito = {
+                            ticker: "BTC", // Arreglar esta poronga
+                            symbol: item.instrumentId.symbol,
+                            timestamp: item.timestamp,
+                            instrumentId: item.instrumentId.marketId,
+                            lastPrice : item.marketData["LA"].price,
+                            rend : item.marketData["LA"].price / item.marketData["OP"],
+                            closing: item.marketData["CL"] != null ? item.marketData["CL"].price : null,
+                            
+                            
+                        }
+                        auxArray.push(objetito);
+                        console.log(objetito.rend)
+                    }
+                });
+                res.send(auxArray)
             }, [3000]);
         }
 
-        // //arma el objeto
-        // array.map( (item, index) => {
-        //     console.log(item.marketData)
-        // } );
-
-        // //retorna obajeto nuevo
-        // res.send('').status(200)
-
-
+        /*setTimeout(() => {
+                array = motherofalldata;
+                array.map( item => {
+                    if(item.marketData.CL != null && item.marketData.LA != null && item.marketData.OP != null ){
+                        const objetito = {
+                            ticker: "BTC",
+                            symbol : item.instrumentId.symbol,
+                            timestamp : item.timestamp,
+                            instrumentId: item.instrumentId.marketId,
+                            marketData: item.marketData.CL,
+                        }
+                        array.push(objetito);
+                        console.log(objetito)
+                    }
+                    
+                } )
+                res.send(auxArray)
+            }, [3000]);*/
     });
 }
 
-// GET 
+
+
 /*
-export const getCompleto = async (req, res) => {
     const aux = [];
     const marketObj = {
         "symbol": 'symbol',
@@ -57,37 +96,14 @@ export const getCompleto = async (req, res) => {
         "rendimento": 0,    //precio actual / precio apertura
     }
 
-
-    getAll().then(respuesta => {
-        if (motherofalldata != []) {
-            array = motherofalldata;
-
-            //charlar esto!!
-
-            setTimeout(() => {
-                array.forEach(element => {
-                    if (motherofalldata && motherofalldata) {
-                        console.log(motherofalldata)
-                    } else {
-                        marketObj[symbol] = motherofalldata[instrumentId].symbol;
-                        marketObj[precio_Actual] = motherofalldata;
-                        marketObj[rendimento] = motherofalldata / motherofalldata;
-                        aux.push(marketObj);
-                    }
-                });
-            }, [3000]);
-        }
-    });
-
     //Esto en teoria ordenaria el array de forma creciente 
 
     
     var sorted = [];                                 //a y b son 2 variables obligatorias, serian 2 objs del array
-    sorted = aux.sort(function (a, b) {            //va tomando de a 2 valores
+    sorted = aux.sort(function (a, b) {              //va tomando de a 2 valores
         return a.rend - b.rend;                      //retorna negativo "a" es menor, positivo si b es menor, 0 si son iguales
     })
-    
-}*/
+*/
 
 
 
