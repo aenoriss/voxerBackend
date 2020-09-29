@@ -16,21 +16,78 @@ const saveAlgo = async (p) => {
 }
 
 /* GET users listing. */
+export const getInstrumentsProbando = async (req, res) => {
+    getInstruments().then(()=>{
+            array.map( (item, index) => {
+            console.log(item.marketData)
+        } )
+    }
+    )
+}
+
+ 
+
 export const getInstruments = async (req, res) => {
-    getAll().then( respuesta => {
-        if(motherofalldata != []){
-            array= motherofalldata;
-            setTimeout(()=>{
-                res.send(motherofalldata)
-            },[3000]);
-        }   
-    }   );  
+    getAll().then(respuesta => {
+        if (motherofalldata != []) {
+            setTimeout(() => {
+                array = motherofalldata;
+            }, [3000]);
+        }
+
+        // //arma el objeto
+        // array.map( (item, index) => {
+        //     console.log(item.marketData)
+        // } );
+
+        // //retorna obajeto nuevo
+        // res.send('').status(200)
+
+
+    });
 }
 
 // GET 
+/*
 export const getCompleto = async (req, res) => {
+    const aux = [];
+    const marketObj = {
+        "symbol": 'symbol',
+        "precio_Actual": 0,
+        "rendimento": 0,    //precio actual / precio apertura
+    }
 
-}
+
+    getAll().then(respuesta => {
+        if (motherofalldata != []) {
+            array = motherofalldata;
+
+            //charlar esto!!
+
+            setTimeout(() => {
+                array.forEach(element => {
+                    if (motherofalldata && motherofalldata) {
+                        console.log(motherofalldata)
+                    } else {
+                        marketObj[symbol] = motherofalldata[instrumentId].symbol;
+                        marketObj[precio_Actual] = motherofalldata;
+                        marketObj[rendimento] = motherofalldata / motherofalldata;
+                        aux.push(marketObj);
+                    }
+                });
+            }, [3000]);
+        }
+    });
+
+    //Esto en teoria ordenaria el array de forma creciente 
+
+    
+    var sorted = [];                                 //a y b son 2 variables obligatorias, serian 2 objs del array
+    sorted = aux.sort(function (a, b) {            //va tomando de a 2 valores
+        return a.rend - b.rend;                      //retorna negativo "a" es menor, positivo si b es menor, 0 si son iguales
+    })
+    
+}*/
 
 
 
@@ -47,13 +104,13 @@ const getToken = async (req, res) => {
                 "x-password": "qpjhwG9)"
             }
         })
-        
+
         const parsedResponse = response.headers.get("X-Auth-Token");
         // console.log(parsedResponse, "TOKEEEEN")
         return parsedResponse;
 
     } catch (error) {
-        console.log(error,"nopee");
+        console.log(error, "nopee");
     }
 }
 
@@ -70,10 +127,10 @@ const getAll = async (req, res) => {
         const data = await response.json();
         //console.log(data.instruments,"dataaa xddd")
         //console.log(data.instruments);
-        data.instruments.forEach( item => {
-         
-            simbolosProd.push({"symbol":item.instrumentId.symbol, marketId: item.instrumentId.marketId})
-           
+        data.instruments.forEach(item => {
+
+            simbolosProd.push({ "symbol": item.instrumentId.symbol, marketId: item.instrumentId.marketId })
+
         })
         // let i=0;
         // for (const item of data.instruments) {
@@ -81,8 +138,8 @@ const getAll = async (req, res) => {
         //     if( i < 5){
         //         simbolosProd.push({"symbol":item.instrumentId.symbol, marketId: item.instrumentId.marketId})
         //        }
-        
-        
+
+
         return await iniciarRofex("cayundiego094776", "qpjhwG9)");
         // console.log(res)
 
@@ -197,62 +254,66 @@ router.get('/winnersAndLosers', async function (req, res, next, winOrLose) {
 */
 
 
-const rofex_iniciarWS =  (pUsuario, pClave, pCallback) => {
+const rofex_iniciarWS = (pUsuario, pClave, pCallback) => {
     try {
         request.post(
             base_url + "j_spring_security_check?j_username=" + pUsuario + "&j_password=" + pClave, { form: { key: 'value' } },
-            function(error, response, body) {
+            function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     console.log(response.statusCode)
                 } else {
-                    if (!response || typeof(response) == "undefined") {
+                    if (!response || typeof (response) == "undefined") {
                         pCallback("error");
                     } else {
-                        if (typeof(response.headers) == "undefined" || typeof(response.headers['set-cookie']) == "undefined" || !response.headers['set-cookie']) {
+                        if (typeof (response.headers) == "undefined" || typeof (response.headers['set-cookie']) == "undefined" || !response.headers['set-cookie']) {
                             pCallback("error");
                         } else {
                             var token = response.headers['set-cookie'].toString().split(";")[0];
                             pCallback(token);
-                        }}}});
+                        }
+                    }
+                }
+            });
     } catch (error) {
         pCallback("error");
     }
 }
 
 
- const iniciarRofex = async (user, password) => {
+const iniciarRofex = async (user, password) => {
 
-     return  rofex_iniciarWS(user, password, async function(pTk) {
+    return rofex_iniciarWS(user, password, async function (pTk) {
 
-            if (pTk != "error") {
-                socketRofex = new WebSocket(base_url_ws, null, { headers: { Cookie:   pTk } });
-                socketRofex.on('open', function open() {
-                    let pedido = {"type": "smd", "level": 1, "entries": ["BI", "OF", "LA", "OP", "CL"],"products": simbolosProd, "depth": 1 };
-                    suscribir(pedido);});
-                socketRofex.on('error', function(e) {
-                    console.log("error de socket", e);
-                });
-                ////////////////////////////////////////////
-                ////////////////////////////////////////////////
-                socketRofex.on('message', data => {
-                    const p = JSON.parse(data);
-                    // console.log(p)
-                    saveAlgo(p);
-                });
-          
-          
-            } else {
-                console.log("Error in login process");
-                // console.log(pLogin);
-            }
-            
-        });
-            
+        if (pTk != "error") {
+            socketRofex = new WebSocket(base_url_ws, null, { headers: { Cookie: pTk } });
+            socketRofex.on('open', function open() {
+                let pedido = { "type": "smd", "level": 1, "entries": ["BI", "OF", "LA", "OP", "CL"], "products": simbolosProd, "depth": 1 };
+                suscribir(pedido);
+            });
+            socketRofex.on('error', function (e) {
+                console.log("error de socket", e);
+            });
+            ////////////////////////////////////////////
+            ////////////////////////////////////////////////
+            socketRofex.on('message', data => {
+                const p = JSON.parse(data);
+                // console.log(p)
+                saveAlgo(p);
+            });
+
+
+        } else {
+            console.log("Error in login process");
+            // console.log(pLogin);
+        }
+
+    });
+
 }
 
-function suscribir(datos){
+function suscribir(datos) {
     if (socketRofex && socketRofex.readyState == 1) {
         socketRofex.send(JSON.stringify(datos));
         // console.log("Conectado con socketRofex", JSON.stringify(datos), socketRofex.readyState);
     }
-   }
+}
