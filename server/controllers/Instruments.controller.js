@@ -27,6 +27,8 @@ export const getInstrumentsProbando = async (req, res) => {
 }
 */
 
+//
+
 /*
 BI: Bid 
 OF: Offer 
@@ -45,20 +47,21 @@ export const getInstruments = async (req, res) => {
                 array = motherofalldata;
 
                 array.forEach(item => {
-                    if (item.marketData.LA != null && item.marketData.OP != null) {
+                    if (item.marketData["LA"] != null && item.marketData["OP"] != null) {
+                        
                         const objetito = {
-                            ticker: "BTC", // Arreglar esta poronga
+                            ticker: "BTC", // Arreglar esta poronga ---> aca se podria comparar con un array ya cargado y poner el que corresponda
                             symbol: item.instrumentId.symbol,
                             timestamp: item.timestamp,
                             instrumentId: item.instrumentId.marketId,
                             lastPrice : item.marketData["LA"].price,
                             rend : item.marketData["LA"].price / item.marketData["OP"],
                             closing: item.marketData["CL"] != null ? item.marketData["CL"].price : null,
-                            
-                            
+                            volumen : item.marketData["EV"] != null ? item.marketData["EV"] : null, 
                         }
+
                         auxArray.push(objetito);
-                        console.log(objetito.rend)
+                        //console.log(motherofalldata);
                     }
                 });
                 res.send(auxArray)
@@ -303,7 +306,7 @@ const iniciarRofex = async (user, password) => {
         if (pTk != "error") {
             socketRofex = new WebSocket(base_url_ws, null, { headers: { Cookie: pTk } });
             socketRofex.on('open', function open() {
-                let pedido = { "type": "smd", "level": 1, "entries": ["BI", "OF", "LA", "OP", "CL"], "products": simbolosProd, "depth": 1 };
+                let pedido = { "type": "smd", "level": 1, "entries": ["BI", "OF", "LA", "OP", "CL", "EV"], "products": simbolosProd, "depth": 1 }; //sacar esto, depende del endpoint
                 suscribir(pedido);
             });
             socketRofex.on('error', function (e) {
