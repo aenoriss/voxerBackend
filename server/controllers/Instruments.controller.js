@@ -1,33 +1,12 @@
+import { getToken, iniciarRofex, motherofalldata } from '../controllers/connection.controller'
 import fetch from 'node-fetch'
-let token;
-const request = require('request');
-const WebSocket = require("ws");
-let socketRofex;
-const base_url = "https://api.remarkets.primary.com.ar/";
-const base_url_ws = "wss://api.remarkets.primary.com.ar/";
+
+let dataMarketHistory = [];
 let simbolosProd = [];
-let motherofalldata = [];
-let array = [];
+let dataJSON = [];
 let auxArray = [];
-///////////////////////
-
-const saveAlgo = async (p) => {
-    motherofalldata.push(p);
-    // console.log(motherofalldata)
-}
-
-/* GET users listing. 
-export const getInstrumentsProbando = async (req, res) => {
-    getInstruments().then(() => {
-        array.map((item, index) => {
-            // console.log(item.marketData)
-        })
-    }
-    )
-}
-*/
-
-//
+let array = [];
+let token;
 
 /*
 BI: Bid 
@@ -39,12 +18,42 @@ SE: Settlement
 OI: Open Interest 
 */
 
+//GetAll (MarketId & Symbol)
+const getAll = async (req, res) => {
+    try {
+        token = await getToken();
+        const response = await fetch('https://api.remarkets.primary.com.ar/rest/instruments/all', {
+            method: 'GET',
+            headers: {
+                'x-auth-token': token
+            }
+        });
+        dataJSON = await response.json();
 
+        dataJSON.instruments.forEach(item => {
+            simbolosProd.push({ "symbol": item.instrumentId.symbol, marketId: item.instrumentId.marketId })
+        })
+        return await iniciarRofex(dataJSON, "getAll");
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'The request failed.'
+        });
+    }
+}
+
+//GetAll + Join Instruments
 export const getInstruments = async (req, res) => {
     getAll().then(() => {
         if (motherofalldata != []) {
             setTimeout(() => {
                 array = motherofalldata;
+
+                // charlar el de symbol porque CREO que va a dar cosas rancias con los symbols que manejamos
+                //const sortedArrayGeneral = array.sort((a,b) => (a["symbol"] > b["symbol"]) ? 1 : ((b)=["symbol"] > a["symbol"]) ? -1 : 0));
+
+                //const sortedArrayPopular = array.sort((a,b) => (a["volumen"] > b["volumen"]) ? 1 : ((b)=["volumen"] > a["volumen"]) ? -1 : 0));
 
                 array.forEach(item => {
                     if (item.marketData["LA"] != null && item.marketData["OP"] != null) {
@@ -61,34 +70,47 @@ export const getInstruments = async (req, res) => {
                         }
 
                         auxArray.push(objetito);
-                        //console.log(motherofalldata);
                     }
                 });
-                res.send(auxArray)
-            }, [3000]);
+                res.send(auxArray);
+            }, [8000]);
         }
-
-        /*setTimeout(() => {
-                array = motherofalldata;
-                array.map( item => {
-                    if(item.marketData.CL != null && item.marketData.LA != null && item.marketData.OP != null ){
-                        const objetito = {
-                            ticker: "BTC",
-                            symbol : item.instrumentId.symbol,
-                            timestamp : item.timestamp,
-                            instrumentId: item.instrumentId.marketId,
-                            marketData: item.marketData.CL,
-                        }
-                        array.push(objetito);
-                        console.log(objetito)
-                    }
-                    
-                } )
-                res.send(auxArray)
-            }, [3000]);*/
     });
 }
 
+// GetMarketHistory
+
+let symbol = "PAMPOct20";
+
+export const getMarketHistory = async (req, res, symbolVar) => {
+    try 
+    {   
+        token = await getToken();
+
+        var date = new Date();
+        let dateVar = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+        let dateFromVar = date.getMonth() - 12;
+        dateVar.toString();
+        dateFromVar.toString();
+        symbolVar = symbol;
+
+        const response = await fetch(`https://api.remarkets.primary.com.ar/rest/data/getTrades?marketId=ROFX&symbol='${symbolVar}'&date=${dateVar}&dateFrom=${dateFromVar}&dateTo=${dateVar}&environment=REMARKETS`, {
+            method: 'GET',
+            headers: {
+                'x-auth-token': token
+            }
+        });
+        
+        dataMarketHistory = await response.json();         
+        res.send(dataMarketHistory);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'The request failed.'
+        });
+    }
+}
 
 
 /*
@@ -108,67 +130,6 @@ export const getInstruments = async (req, res) => {
     })
 */
 
-
-
-
-
-// const token = 'EvdjIIAWqHRA47DGjUkF82FQDJGVZdytxRKQfUf7Xv8=';
-
-const getToken = async (req, res) => {
-    try {
-        const response = await fetch("https://api.remarkets.primary.com.ar/auth/getToken", {
-            method: 'POST',
-            headers: {
-                "x-Username": "cayundiego094776",
-                "x-password": "qpjhwG9)"
-            }
-        })
-
-        const parsedResponse = response.headers.get("X-Auth-Token");
-        // console.log(parsedResponse, "TOKEEEEN")
-        return parsedResponse;
-
-    } catch (error) {
-        console.log(error, "nopee");
-    }
-}
-
-//GET MarketId & Symbol
-const getAll = async (req, res) => {
-    try {
-        token = await getToken();
-        const response = await fetch('https://api.remarkets.primary.com.ar/rest/instruments/all', {
-            method: 'GET',
-            headers: {
-                'x-auth-token': token
-            }
-        });
-        const data = await response.json();
-        //console.log(data.instruments,"dataaa xddd")
-        //console.log(data.instruments);
-        data.instruments.forEach(item => {
-
-            simbolosProd.push({ "symbol": item.instrumentId.symbol, marketId: item.instrumentId.marketId })
-
-        })
-        // let i=0;
-        // for (const item of data.instruments) {
-        //     i++;
-        //     if( i < 5){
-        //         simbolosProd.push({"symbol":item.instrumentId.symbol, marketId: item.instrumentId.marketId})
-        //        }
-
-
-        return await iniciarRofex("cayundiego094776", "qpjhwG9)");
-        // console.log(res)
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            message: 'The request failed.'
-        });
-    }
-}
 
 // GET Winners & Losers
 // winOrLose = bool
@@ -272,67 +233,4 @@ router.get('/winnersAndLosers', async function (req, res, next, winOrLose) {
 });
 */
 
-
-const rofex_iniciarWS = (pUsuario, pClave, pCallback) => {
-    try {
-        request.post(
-            base_url + "j_spring_security_check?j_username=" + pUsuario + "&j_password=" + pClave, { form: { key: 'value' } },
-            function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    console.log(response.statusCode)
-                } else {
-                    if (!response || typeof (response) == "undefined") {
-                        pCallback("error");
-                    } else {
-                        if (typeof (response.headers) == "undefined" || typeof (response.headers['set-cookie']) == "undefined" || !response.headers['set-cookie']) {
-                            pCallback("error");
-                        } else {
-                            var token = response.headers['set-cookie'].toString().split(";")[0];
-                            pCallback(token);
-                        }
-                    }
-                }
-            });
-    } catch (error) {
-        pCallback("error");
-    }
-}
-
-
-const iniciarRofex = async (user, password) => {
-
-    return rofex_iniciarWS(user, password, async function (pTk) {
-
-        if (pTk != "error") {
-            socketRofex = new WebSocket(base_url_ws, null, { headers: { Cookie: pTk } });
-            socketRofex.on('open', function open() {
-                let pedido = { "type": "smd", "level": 1, "entries": ["BI", "OF", "LA", "OP", "CL", "EV"], "products": simbolosProd, "depth": 1 }; //sacar esto, depende del endpoint
-                suscribir(pedido);
-            });
-            socketRofex.on('error', function (e) {
-                console.log("error de socket", e);
-            });
-            ////////////////////////////////////////////
-            ////////////////////////////////////////////////
-            socketRofex.on('message', data => {
-                const p = JSON.parse(data);
-                // console.log(p)
-                saveAlgo(p);
-            });
-
-
-        } else {
-            console.log("Error in login process");
-            // console.log(pLogin);
-        }
-
-    });
-
-}
-
-function suscribir(datos) {
-    if (socketRofex && socketRofex.readyState == 1) {
-        socketRofex.send(JSON.stringify(datos));
-        // console.log("Conectado con socketRofex", JSON.stringify(datos), socketRofex.readyState);
-    }
-}
+export { dataJSON, simbolosProd };

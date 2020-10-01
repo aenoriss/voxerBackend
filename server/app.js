@@ -1,26 +1,19 @@
+import instrumentsRouter from './routes/instruments.routes'
 import express, { json } from 'express';
 import morgan from 'morgan'
-
-
-
-import instrumentsRouter from './routes/instruments.routes'
-
-
 
 const app = () => {
   const router = express();
   const apiRoutes = express();
 
-  apiRoutes
-    .use(morgan('dev'))
-    .use(json());
+  router.use('/api', apiRoutes); // Ruta principal
 
-  
-  apiRoutes.use('/instruments', instrumentsRouter);
+  apiRoutes 
+  .use(morgan('dev'))
+  .use(json());
 
+  apiRoutes.use('/instruments', instrumentsRouter); // Ruta autogenerada
 
-  
-  router.use('/api', apiRoutes);
   return router;
 }
 
