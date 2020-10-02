@@ -69,9 +69,14 @@ export const getInstruments = async (req, res) => {
                             volumen : item.marketData["EV"] != null ? item.marketData["EV"] : null, 
                         }
 
+                        console.log(getMarketHistory(item.symbol), "locoooo")
+
                         auxArray.push(objetito);
                     }
                 });
+
+                
+        
                 res.send(auxArray);
             }, [8000]);
         }
@@ -80,8 +85,6 @@ export const getInstruments = async (req, res) => {
 
 // GetMarketHistory
 
-let symbol = "PAMPOct20";
-
 export const getMarketHistory = async (req, res, symbolVar) => {
     try 
     {   
@@ -89,17 +92,18 @@ export const getMarketHistory = async (req, res, symbolVar) => {
 
         var date = new Date();
         let dateVar = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
-        let dateFromVar = date.getMonth() - 12;
+        let dateFromVar = date.getFullYear() -1 +'-'+(date.getMonth()+1)+'-'+date.getDate();
         dateVar.toString();
         dateFromVar.toString();
-        symbolVar = symbol;
 
-        const response = await fetch(`https://api.remarkets.primary.com.ar/rest/data/getTrades?marketId=ROFX&symbol='${symbolVar}'&date=${dateVar}&dateFrom=${dateFromVar}&dateTo=${dateVar}&environment=REMARKETS`, {
+        const response = await fetch(`https://api.remarkets.primary.com.ar/rest/data/getTrades?marketId=ROFX&symbol=${symbolVar}&dateFrom=${dateFromVar}&dateTo=${dateVar}&environment=REMARKETS`, {
             method: 'GET',
             headers: {
                 'x-auth-token': token
             }
         });
+
+        console.log(dateFromVar)
         
         dataMarketHistory = await response.json();         
         res.send(dataMarketHistory);
