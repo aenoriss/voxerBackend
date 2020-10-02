@@ -69,7 +69,7 @@ export const getInstruments = async (req, res) => {
                             volumen : item.marketData["EV"] != null ? item.marketData["EV"] : null, 
                         }
 
-                        console.log(getMarketHistory(item.symbol), "locoooo")
+                        //console.log(getMarketHistory(item.symbol), "locoooo")
 
                         auxArray.push(objetito);
                     }
@@ -105,7 +105,8 @@ export const getMarketHistory = async (req, res, symbolVar) => {
 
         console.log(dateFromVar)
         
-        dataMarketHistory = await response.json();         
+        dataMarketHistory = await response.json();   
+        console.log(res);      
         res.send(dataMarketHistory);
 
     } catch (error) {

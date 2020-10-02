@@ -69,7 +69,8 @@ export const iniciarRofex = async (lData, typeVar) => {
             break;
         
         case "getMarketHistory" :
-            pedido = { "products": simbolosProd }
+            // TODO: solicitar en entries el market history
+            // pedido = { "type": "smd", "level": 1, "entries": ["LA", "OP", "CL", "EV"], "products": simbolosProd, "depth": 1 };
             break;
     }
 
