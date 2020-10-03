@@ -51,7 +51,10 @@ export const getInstruments = async (req, res) => {
                 array = motherofalldata;
 
                 // charlar el de symbol porque CREO que va a dar cosas rancias con los symbols que manejamos
-                //const sortedArrayGeneral = array.sort((a,b) => (a["symbol"] > b["symbol"]) ? 1 : ((b)=["symbol"] > a["symbol"]) ? -1 : 0));
+                // const sortedArrayGeneral = array.sort((a,b) => (a["symbol"] < b["symbol"]) ? 1 : ((b)=["symbol"] > a["symbol"]) ? -1 : 0);
+
+                array.sort((a,b) => (a.instrumentId.symbol > b.instrumentId.symbol) 
+                    ? 1 : ((b.instrumentId.symbol > a.instrumentId.symbol) ? -1 : 0)); 
 
                 //const sortedArrayPopular = array.sort((a,b) => (a["volumen"] > b["volumen"]) ? 1 : ((b)=["volumen"] > a["volumen"]) ? -1 : 0));
 
