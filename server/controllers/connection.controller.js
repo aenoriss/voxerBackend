@@ -62,6 +62,7 @@ export const iniciarRofex = async (lData, typeVar) => {
     
     lData = dataJSON;
     let pedido;
+    let dateTo, dateFrom;
 
     switch(typeVar){
         case "getAll" :
@@ -69,7 +70,7 @@ export const iniciarRofex = async (lData, typeVar) => {
             break;
         
         case "getMarketHistory" :
-            pedido = { "products": simbolosProd }
+            pedido = { dateFrom, dateTo, "products": simbolosProd};
             break;
     }
 

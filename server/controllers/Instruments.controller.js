@@ -19,7 +19,7 @@ OI: Open Interest
 */
 
 //GetAll (MarketId & Symbol)
-const getAll = async (req, res) => {
+const getAll = async (typeVar, req, res) => {
     try {
         token = await getToken();
         const response = await fetch('https://api.remarkets.primary.com.ar/rest/instruments/all', {
@@ -33,7 +33,10 @@ const getAll = async (req, res) => {
         dataJSON.instruments.forEach(item => {
             simbolosProd.push({ "symbol": item.instrumentId.symbol, marketId: item.instrumentId.marketId })
         })
-        return await iniciarRofex(dataJSON, "getAll");
+
+        ///aca se comprobaria que tipo de pedidio es
+
+        return await iniciarRofex(dataJSON, typeVar); ///solo pasar pedido
 
     } catch (error) {
         console.log(error);
@@ -45,7 +48,7 @@ const getAll = async (req, res) => {
 
 //GetAll + Join Instruments
 export const getInstruments = async (req, res) => {
-    getAll().then(() => {
+    getAll("getMarketHistory").then(() => {
         if (motherofalldata != []) {
             setTimeout(() => {
                 array = motherofalldata;
@@ -69,13 +72,12 @@ export const getInstruments = async (req, res) => {
                             volumen : item.marketData["EV"] != null ? item.marketData["EV"] : null, 
                         }
 
-                        console.log(getMarketHistory(item.symbol), "locoooo")
 
                         auxArray.push(objetito);
                     }
                 });
 
-                
+                auxarray.sort((a,b) => (a["volumen"] > b["volumen"]) ? 1 : ((b)=["volumen"] > a["volumen"]) ? -1 : 0)
         
                 res.send(auxArray);
             }, [8000]);
@@ -83,19 +85,36 @@ export const getInstruments = async (req, res) => {
     });
 }
 
+export const symbolSync = async (req,res) => {
+    try {
+        
+        // actualiza la lista de simbols (symbolProd)
+        //la idea seria llamar a esto para que haga los fetchs y asi podar pasar todo de forma modularizada
+
+    } catch (error) {
+        
+
+    }
+
+}
+
+
 // GetMarketHistory
 
-export const getMarketHistory = async (req, res, symbolVar) => {
+
+export const getMarketHistory = async (req, res) => { 
     try 
     {   
         token = await getToken();
 
+        const symbolVar= null;
         var date = new Date();
         let dateVar = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
         let dateFromVar = date.getFullYear() -1 +'-'+(date.getMonth()+1)+'-'+date.getDate();
         dateVar.toString();
         dateFromVar.toString();
 
+        //desde aca hasta el datamarket deberia estar en el forEach
         const response = await fetch(`https://api.remarkets.primary.com.ar/rest/data/getTrades?marketId=ROFX&symbol=${symbolVar}&dateFrom=${dateFromVar}&dateTo=${dateVar}&environment=REMARKETS`, {
             method: 'GET',
             headers: {
@@ -105,7 +124,8 @@ export const getMarketHistory = async (req, res, symbolVar) => {
 
         console.log(dateFromVar)
         
-        dataMarketHistory = await response.json();         
+        dataMarketHistory = await response.json();    
+        //aca iria un .push     
         res.send(dataMarketHistory);
 
     } catch (error) {
