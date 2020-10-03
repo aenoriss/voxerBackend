@@ -48,13 +48,15 @@ const getAll = async (typeVar, req, res) => {
 
 //GetAll + Join Instruments
 export const getInstruments = async (req, res) => {
-    getAll("getMarketHistory").then(() => {
+    getAll("getAll").then(() => {
         if (motherofalldata != []) {
             setTimeout(() => {
                 array = motherofalldata;
 
                 // charlar el de symbol porque CREO que va a dar cosas rancias con los symbols que manejamos
-                //const sortedArrayGeneral = array.sort((a,b) => (a["symbol"] > b["symbol"]) ? 1 : ((b)=["symbol"] > a["symbol"]) ? -1 : 0));
+                // const sortedArrayGeneral = array.sort((a,b) => (a["symbol"] < b["symbol"]) ? 1 : ((b)=["symbol"] > a["symbol"]) ? -1 : 0);
+
+               // array.sort((a,b) => (a.instrumentId.symbol > b.instrumentId.symbol) ? 1 : ((b.instrumentId.symbol > a.instrumentId.symbol) ? -1 : 0)); 
 
                 //const sortedArrayPopular = array.sort((a,b) => (a["volumen"] > b["volumen"]) ? 1 : ((b)=["volumen"] > a["volumen"]) ? -1 : 0));
 
@@ -72,12 +74,13 @@ export const getInstruments = async (req, res) => {
                             volumen : item.marketData["EV"] != null ? item.marketData["EV"] : null, 
                         }
 
+                        //console.log(getMarketHistory(item.symbol), "locoooo")
 
                         auxArray.push(objetito);
                     }
                 });
 
-                auxarray.sort((a,b) => (a["volumen"] > b["volumen"]) ? 1 : ((b)=["volumen"] > a["volumen"]) ? -1 : 0)
+                //auxarray.sort((a,b) => (a["volumen"] > b["volumen"]) ? 1 : ((b)=["volumen"] > a["volumen"]) ? -1 : 0)
         
                 res.send(auxArray);
             }, [8000]);
@@ -124,8 +127,8 @@ export const getMarketHistory = async (req, res) => {
 
         console.log(dateFromVar)
         
-        dataMarketHistory = await response.json();    
-        //aca iria un .push     
+        //dataMarketHistory = await response.json();   
+        console.log(res);      
         res.send(dataMarketHistory);
 
     } catch (error) {

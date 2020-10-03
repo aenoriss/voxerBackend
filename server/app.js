@@ -1,6 +1,7 @@
 import instrumentsRouter from './routes/instruments.routes'
 import express, { json } from 'express';
-import morgan from 'morgan'
+import morgan from 'morgan';
+import cors from 'cors';
 
 const app = () => {
   const router = express();
@@ -10,7 +11,8 @@ const app = () => {
 
   apiRoutes 
   .use(morgan('dev'))
-  .use(json());
+  .use(json())
+  .use(cors());
 
   apiRoutes.use('/instruments', instrumentsRouter); // Ruta autogenerada
 
