@@ -67,7 +67,9 @@ export const getInstruments = async (req, res) => {
                             auxArray.push(objetito); //console.log(getMarketHistory(item.symbol), "locoooo")
                         }
                     });
+
                     res.send(auxArray);
+                    
                 }, [8000]);
             }
         });
@@ -83,7 +85,7 @@ export const getInstruments = async (req, res) => {
 export const getMarketHistory = async (req, res, symbolVar) => {
     try {
         token = await getToken();
-        console.log(typeof req.query);
+        //console.log(typeof req.query);
         symbolVar = req.query.symbolVar;
         var date = new Date();
         let dateVar = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
@@ -111,27 +113,42 @@ export const getMarketHistory = async (req, res, symbolVar) => {
 }
 
 
-/*
-    const aux = [];
-    const marketObj = {
-        "symbol": 'symbol',
-        "precio_Actual": 0,
-        "rendimento": 0,    //precio actual / precio apertura
-    }
-
-    //Esto en teoria ordenaria el array de forma creciente 
-
-    
-    var sorted = [];                                 //a y b son 2 variables obligatorias, serian 2 objs del array
-    sorted = aux.sort(function (a, b) {              //va tomando de a 2 valores
-        return a.rend - b.rend;                      //retorna negativo "a" es menor, positivo si b es menor, 0 si son iguales
-    })
-*/
-
-
 // GET Winners & Losers | winOrLose = bool
 export const getWinnersAndLosers = async (req, res, winOrLose) => {
     try {
+
+        // comentaod hasta que funcione la API
+
+        /*
+        getInstruments().then(() => {       //ver si funciona el get instruments, sino usar getAll y agregar la creacion del obj
+            if (array != []) {
+                setTimeout(() => {
+                   
+                    array.sort((a, b) => (a.rend > b.rend)
+                    ? 1 : ((b.rend > a.rend) ? -1 : 0));
+            
+                    let WORArray = [];
+            
+                    if(winOrLose){
+                        for(let i = 0; i < 5; i++){
+                            WORArray.push(array[i]);
+                        }
+                    } 
+                    else 
+                    {
+                        for(let i = array.length(); i > (array.length() - 5); i--){
+                            WORArray.push(array[i]);
+                        }
+                    }
+                    res.send(WORArray);
+                }, [8000]);
+            }
+        });*/
+
+
+
+        /// winers and losers esta mockeado hasta que funcione la API
+
         const mockeoDelOrto = [
             {
                 ticker: "BTC",
