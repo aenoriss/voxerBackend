@@ -11,7 +11,7 @@ const password = "qpjhwG9)";
 let motherofalldata = [];
 let socketRofex;
 
-const saveAlgo = async (p) => {
+const pushMotherOfAllData = async (p) => {
     motherofalldata.push(p);
 }
 
@@ -82,24 +82,23 @@ export const iniciarRofex = async (lData, typeVar) => {
             suscribir(pedido);
             });
             socketRofex.on('error', function (e) {
-                console.log("error de socket", e);
+                console.log("Error de socket", e);
             });
             socketRofex.on('message', lData => {
-                const p = JSON.parse(lData);
-                saveAlgo(p);
+                const infoToPush = JSON.parse(lData);
+                pushMotherOfAllData(infoToPush);
             });
         } 
         else 
         {
-            console.log("Error in login process");
+            console.log("Error in login process.");
         }
     });
 }
 
 function suscribir(datos) {    
     if (socketRofex && socketRofex.readyState == 1) {
-        socketRofex.send(JSON.stringify(datos));        
-        // console.log("Conectado con socketRofex", JSON.stringify(datos), socketRofex.readyState);
+        socketRofex.send(JSON.stringify(datos));       
     }
 }
 

@@ -8,18 +8,16 @@ let auxArray = [];
 let array = [];
 let token;
 
-/*
-BI: Bid 
+/* BI: Bid 
 OF: Offer 
 LA: Last, último precio operado 
 OP: Open, precio de apertura 
 CL: Close, precio de cierre 
 SE: Settlement
-OI: Open Interest 
-*/
+OI: Open Interest */
 
 //GetAll (MarketId & Symbol)
-const getAll = async (typeVar, req, res) => {
+const getAll = async (req, res) => {
     try {
         token = await getToken();
         const response = await fetch('https://api.remarkets.primary.com.ar/rest/instruments/all', {
@@ -33,11 +31,7 @@ const getAll = async (typeVar, req, res) => {
         dataJSON.instruments.forEach(item => {
             simbolosProd.push({ "symbol": item.instrumentId.symbol, marketId: item.instrumentId.marketId })
         })
-
-        ///aca se comprobaria que tipo de pedidio es
-
-        return await iniciarRofex(dataJSON, typeVar); ///solo pasar pedido
-
+        return await iniciarRofex(dataJSON, "getAll");
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -48,76 +42,56 @@ const getAll = async (typeVar, req, res) => {
 
 //GetAll + Join Instruments
 export const getInstruments = async (req, res) => {
-    getAll("getAll").then(() => {
-        if (motherofalldata != []) {
-            setTimeout(() => {
-                array = motherofalldata;
-
-                // charlar el de symbol porque CREO que va a dar cosas rancias con los symbols que manejamos
-                // const sortedArrayGeneral = array.sort((a,b) => (a["symbol"] < b["symbol"]) ? 1 : ((b)=["symbol"] > a["symbol"]) ? -1 : 0);
-
-               // array.sort((a,b) => (a.instrumentId.symbol > b.instrumentId.symbol) ? 1 : ((b.instrumentId.symbol > a.instrumentId.symbol) ? -1 : 0)); 
-
-                //const sortedArrayPopular = array.sort((a,b) => (a["volumen"] > b["volumen"]) ? 1 : ((b)=["volumen"] > a["volumen"]) ? -1 : 0));
-
-                array.forEach(item => {
-                    if (item.marketData["LA"] != null && item.marketData["OP"] != null) {
-                        
-                        const objetito = {
-                            ticker: "BTC", // Arreglar esta poronga ---> aca se podria comparar con un array ya cargado y poner el que corresponda
-                            symbol: item.instrumentId.symbol,
-                            timestamp: item.timestamp,
-                            instrumentId: item.instrumentId.marketId,
-                            lastPrice : item.marketData["LA"].price,
-                            rend : item.marketData["LA"].price / item.marketData["OP"],
-                            closing: item.marketData["CL"] != null ? item.marketData["CL"].price : null,
-                            volumen : item.marketData["EV"] != null ? item.marketData["EV"] : null, 
-                        }
-
-                        //console.log(getMarketHistory(item.symbol), "locoooo")
-
-                        auxArray.push(objetito);
-                    }
-                });
-
-                //auxarray.sort((a,b) => (a["volumen"] > b["volumen"]) ? 1 : ((b)=["volumen"] > a["volumen"]) ? -1 : 0)
-        
-                res.send(auxArray);
-            }, [8000]);
-        }
-    });
-}
-
-export const symbolSync = async (req,res) => {
     try {
-        
-        // actualiza la lista de simbols (symbolProd)
-        //la idea seria llamar a esto para que haga los fetchs y asi podar pasar todo de forma modularizada
+        getAll().then(() => {
+            if (motherofalldata != []) {
+                setTimeout(() => {
+                    array = motherofalldata;
 
+                    array.sort((a, b) => (a.instrumentId.symbol > b.instrumentId.symbol)
+                        ? 1 : ((b.instrumentId.symbol > a.instrumentId.symbol) ? -1 : 0));
+
+                    array.forEach(item => {
+                        if (item.marketData["LA"] != null && item.marketData["OP"] != null) {
+
+                            const objetito = {
+                                ticker: "BTC", // Arreglar esta poronga ---> aca se podria comparar con un array ya cargado y poner el que corresponda
+                                symbol: item.instrumentId.symbol,
+                                timestamp: item.timestamp,
+                                instrumentId: item.instrumentId.marketId,
+                                lastPrice: item.marketData["LA"].price,
+                                rend: item.marketData["LA"].price / item.marketData["OP"],
+                                closing: item.marketData["CL"] != null ? item.marketData["CL"].price : null,
+                                volumen: item.marketData["EV"] != null ? item.marketData["EV"] : null,
+                            }
+                            auxArray.push(objetito); //console.log(getMarketHistory(item.symbol), "locoooo")
+                        }
+                    });
+                    res.send(auxArray);
+                }, [8000]);
+            }
+        });
     } catch (error) {
-        
-
+        console.log(error);
+        res.status(500).json({
+            message: 'The request failed.'
+        });
     }
-
 }
-
 
 // GetMarketHistory
-
-
-export const getMarketHistory = async (req, res) => { 
-    try 
-    {   
+export const getMarketHistory = async (req, res, symbolVar) => {
+    try {
         token = await getToken();
-
-        const symbolVar= null;
+        console.log(typeof req.query);
+        symbolVar = req.query.symbolVar;
         var date = new Date();
-        let dateVar = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
-        let dateFromVar = date.getFullYear() -1 +'-'+(date.getMonth()+1)+'-'+date.getDate();
+        let dateVar = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+        let dateFromVar = date.getFullYear() - 1 + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+
         dateVar.toString();
         dateFromVar.toString();
 
-        //desde aca hasta el datamarket deberia estar en el forEach
         const response = await fetch(`https://api.remarkets.primary.com.ar/rest/data/getTrades?marketId=ROFX&symbol=${symbolVar}&dateFrom=${dateFromVar}&dateTo=${dateVar}&environment=REMARKETS`, {
             method: 'GET',
             headers: {
@@ -125,10 +99,7 @@ export const getMarketHistory = async (req, res) => {
             }
         });
 
-        console.log(dateFromVar)
-        
-        //dataMarketHistory = await response.json();   
-        console.log(res);      
+        dataMarketHistory = await response.json();
         res.send(dataMarketHistory);
 
     } catch (error) {
@@ -158,106 +129,137 @@ export const getMarketHistory = async (req, res) => {
 */
 
 
-// GET Winners & Losers
-// winOrLose = bool
+// GET Winners & Losers | winOrLose = bool
+export const getWinnersAndLosers = async (req, res, winOrLose) => {
+    try {
+        const mockeoDelOrto = [
+            {
+                ticker: "BTC",
+                symbol: "aaaaa",
+                timestamp: 8000000 + Math.random() * (90 - 5) + 5,
+                instrumentId: 1,
+                lastPrice: Math.random() * (90 - 5) + 5,
+                rend: -50,
+                closing: Math.random() * (90 - 5) + 5,
+                volumen: Math.random() * (90 - 5) + 5,
+            },
+            {
+                ticker: "BTC",
+                symbol: "bbbbb",
+                timestamp: 8000000 + Math.random() * (90 - 5) + 5,
+                instrumentId: 2,
+                lastPrice: Math.random() * (90 - 5) + 5,
+                rend: Math.random() * (90 - 5) + 5,
+                closing: Math.random() * (90 - 5) + 5,
+                volumen: Math.random() * (90 - 5) + 5,
+            },
+            {
+                ticker: "BTC",
+                symbol: "ccccc",
+                timestamp: 8000000 + Math.random() * (90 - 5) + 5,
+                instrumentId: 3,
+                lastPrice: Math.random() * (90 - 5) + 5,
+                rend: Math.random() * (90 - 5) + 5,
+                closing: Math.random() * (90 - 5) + 5,
+                volumen: Math.random() * (90 - 5) + 5,
+            },
+            {
+                ticker: "BTC",
+                symbol: "ddddd",
+                timestamp: 8000000 + Math.random() * (90 - 5) + 5,
+                instrumentId: 4,
+                lastPrice: Math.random() * (90 - 5) + 5,
+                rend: Math.random() * (90 - 5) + 5,
+                closing: Math.random() * (90 - 5) + 5,
+                volumen: Math.random() * (90 - 5) + 5,
+            },
+            {
+                ticker: "BTC",
+                symbol: "eeeee",
+                timestamp: 8000000 + Math.random() * (90 - 5) + 5,
+                instrumentId: 5,
+                lastPrice: Math.random() * (90 - 5) + 5,
+                rend: Math.random() * (90 - 5) + 5,
+                closing: Math.random() * (90 - 5) + 5,
+                volumen: Math.random() * (90 - 5) + 5,
+            },
+            {
+                ticker: "BTC",
+                symbol: "fffff",
+                timestamp: 8000000 + Math.random() * (90 - 5) + 5,
+                instrumentId: 6,
+                lastPrice: Math.random() * (90 - 5) + 5,
+                rend: Math.random() * (90 - 5) + 5,
+                closing: Math.random() * (90 - 5) + 5,
+                volumen: Math.random() * (90 - 5) + 5,
+            },
+            {
+                ticker: "BTC",
+                symbol: "ggggg",
+                timestamp: 8000000 + Math.random() * (90 - 5) + 5,
+                instrumentId: 7,
+                lastPrice: Math.random() * (90 - 5) + 5,
+                rend: Math.random() * (90 - 5) + 5,
+                closing: Math.random() * (90 - 5) + 5,
+                volumen: Math.random() * (90 - 5) + 5,
+            },
+            {
+                ticker: "BTC",
+                symbol: "hhhhh",
+                timestamp: 8000000 + Math.random() * (90 - 5) + 5,
+                instrumentId: 8,
+                lastPrice: Math.random() * (90 - 5) + 5,
+                rend: Math.random() * (90 - 5) + 5,
+                closing: Math.random() * (90 - 5) + 5,
+                volumen: Math.random() * (90 - 5) + 5,
+            },
+            {
+                ticker: "BTC",
+                symbol: "iiiii",
+                timestamp: 8000000 + Math.random() * (90 - 5) + 5,
+                instrumentId: 9,
+                lastPrice: Math.random() * (90 - 5) + 5,
+                rend: Math.random() * (90 - 5) + 5,
+                closing: Math.random() * (90 - 5) + 5,
+                volumen: Math.random() * (90 - 5) + 5,
+            },
+            {
+                ticker: "BTC",
+                symbol: "jjjjj",
+                timestamp: 8000000 + Math.random() * (90 - 5) + 5,
+                instrumentId: 10,
+                lastPrice: Math.random() * (90 - 5) + 5,
+                rend: Math.random() * (90 - 5) + 5,
+                closing: Math.random() * (90 - 5) + 5,
+                volumen: Math.random() * (90 - 5) + 5,
+            },
+        ];
 
-/*
-router.get('/winnersAndLosers', async function (req, res, next, winOrLose) {    
+        mockeoDelOrto.sort((a, b) => (a.rend > b.rend)
+        ? 1 : ((b.rend > a.rend) ? -1 : 0));
 
-    const mockeoDelOrto = [
-        {
-            name : "a",
-            price : 2,
-            opPrice : 1,
-            rend : opPrice / price,
-        },
-        {
-            name : "b",
-            price : 3,
-            opPrice : 2,
-            rend : opPrice / price,
-        },
-        {
-            name : "c",
-            price : 1,
-            opPrice : 3,
-            rend : opPrice / price,
-        },
-        {
-            name : "d",
-            price : 7,
-            opPrice : 4,
-            rend : opPrice / price,
-        },
-        {
-            name : "e",
-            price : 6,
-            opPrice : 5,
-            rend : opPrice / price,
-        },
-        {
-            name : "f",
-            price : 5,
-            opPrice : 6,
-            rend : opPrice / price,
-        },
-        {
-            name : "g",
-            price : 9,
-            opPrice : 7,
-            rend : opPrice / price,
-        },
-        {
-            name : "h",
-            price : 3,
-            opPrice : 8,
-            rend : opPrice / price,
-        },
-        {
-            name : "i",
-            price : 7,
-            opPrice : 9,
-            rend : opPrice / price,
-        },
-        {
-            name : "j",
-            price : 5,
-            opPrice : 10,
-            rend : opPrice / price,
-        },
-    ];
+        let WORArray = [];
 
-    getAll().then( respuesta => {
-        if(mockeoDelOrto != []){  
-
-            arr = mockeoDelOrto;
-
-            const bubbleSort = arr => {
-                const l = arr.length;
-                for (let i = 0; i < l; i++ ) {
-                    for (let j = 0; j < l - 1 - i; j++ ) {
-                        if ( arr[ j ].rend > arr[ j + 1 ].rend ) {
-                            [ arr[ j ].rend, arr[ j + 1 ].rend ] = [ arr[ j + 1 ].rend, arr[ j ].rend ];
-                        }
-                    }
-                }
-            
-                return arr;
-            };
-            
-
-            /*if(winOrLose){ 
-                mockeoDelOrto.forEach(element => {                    
-                }); 
-            } else {
+        if(winOrLose){
+            for(let i = 0; i < 5; i++){
+                WORArray.push(mockeoDelOrto[i]);
             }
-            console.log(bubbleSort)
-            setTimeout(()=>{                
-                res.send("asd")
-            },[3000]);
-        }   
-    }   );    
-});
-*/
+        } 
+        else 
+        {
+            for(let i = mockeoDelOrto.length(); i > (mockeoDelOrto.length() - 5); i--){
+                WORArray.push(mockeoDelOrto[i]);
+            }
+        }
+
+        res.send(WORArray);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'The request failed.'
+        });
+    }
+};
 
 export { dataJSON, simbolosProd };
