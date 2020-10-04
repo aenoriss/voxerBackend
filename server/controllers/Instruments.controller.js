@@ -117,6 +117,7 @@ export const getMarketHistory = async (req, res, symbolVar) => {
 export const getWinnersAndLosers = async (req, res, winOrLose) => {
     try {
 
+        
         // comentaod hasta que funcione la API
 
         /*
