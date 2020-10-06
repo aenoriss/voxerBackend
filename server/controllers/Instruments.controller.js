@@ -5,6 +5,7 @@ let dataMarketHistory = [];
 let simbolosProd = [];
 let dataJSON = [];
 let auxArray = [];
+var array2 = [];
 let array = [];
 let token;
 
@@ -52,10 +53,9 @@ export const getInstruments = async (req, res) => {
                         ? 1 : ((b.instrumentId.symbol > a.instrumentId.symbol) ? -1 : 0));
 
                     array.forEach(item => {
-                        if (item.marketData["LA"] != null && item.marketData["OP"] != null) {
-
+                        if (item.marketData["LA"] != null && item.marketData["OP"] != null) {                        
                             const objetito = {
-                                ticker: "BTC", // Arreglar esta poronga ---> aca se podria comparar con un array ya cargado y poner el que corresponda
+                                ticker: item.instrumentId.symbol.includes("DO") == true ? "Dolar" :  item.instrumentId.symbol.includes("MERV") == true ? "Merval" : "BTC", //aca se podria comparar con un array ya cargado y poner el que corresponda 
                                 symbol: item.instrumentId.symbol,
                                 timestamp: item.timestamp,
                                 instrumentId: item.instrumentId.marketId,
@@ -67,9 +67,8 @@ export const getInstruments = async (req, res) => {
                             auxArray.push(objetito); //console.log(getMarketHistory(item.symbol), "locoooo")
                         }
                     });
-
+                    array2 = auxArray;
                     res.send(auxArray);
-                    
                 }, [8000]);
             }
         });
@@ -82,11 +81,12 @@ export const getInstruments = async (req, res) => {
 }
 
 // GetMarketHistory
-export const getMarketHistory = async (req, res, symbolVar) => {
+export const getMarketHistory = async (req, res, symbolVar) => { //agregar el mercado de byma
     try {
         token = await getToken();
         //console.log(typeof req.query);
         symbolVar = req.query.symbolVar;
+        let marketIdAux = req.query.marketId;
         var date = new Date();
         let dateVar = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
         let dateFromVar = date.getFullYear() - 1 + '-' + (date.getMonth() + 1) + '-' + date.getDate();
@@ -94,7 +94,7 @@ export const getMarketHistory = async (req, res, symbolVar) => {
         dateVar.toString();
         dateFromVar.toString();
 
-        const response = await fetch(`https://api.remarkets.primary.com.ar/rest/data/getTrades?marketId=ROFX&symbol=${symbolVar}&dateFrom=${dateFromVar}&dateTo=${dateVar}&environment=REMARKETS`, {
+        const response = await fetch(`https://api.remarkets.primary.com.ar/rest/data/getTrades?marketId=${marketIdAux}&symbol=${symbolVar}&dateFrom=${dateFromVar}&dateTo=${dateVar}&environment=REMARKETS`, {
             method: 'GET',
             headers: {
                 'x-auth-token': token
@@ -113,43 +113,42 @@ export const getMarketHistory = async (req, res, symbolVar) => {
 }
 
 
-// GET Winners & Losers | winOrLose = bool
-export const getWinnersAndLosers = async (req, res, winOrLose) => {
+// GET Winners & Losers | winOrLose = bool  | True = win & False = Lose
+export const getWinnersAndLosers = async (req, res) => {
     try {
+        if (auxArray != []) {   
+            let WORArray = [];
+            auxArray.sort((a, b) => (a.rend > b.rend) ? 1 : ((b.rend > a.rend) ? -1 : 0));
 
+            let conditional = req.query.WinOrLose;
+            
+            if(conditional == "false"){
+                for(let i = 0; i < 5; i++){
+                    WORArray.push(auxArray[i]);
+                }
+            } 
+            else 
+            {
+                if(conditional == "true"){
+                    for(let j = auxArray.length-1; j > (auxArray.length - 6); j--){
+                        WORArray.push(auxArray[j]);
+                    }
+                }   
+            }
+            res.send(WORArray);        
+        }
         
         // comentaod hasta que funcione la API
 
         /*
         getInstruments().then(() => {       //ver si funciona el get instruments, sino usar getAll y agregar la creacion del obj
-            if (array != []) {
-                setTimeout(() => {
-                   
-                    array.sort((a, b) => (a.rend > b.rend)
-                    ? 1 : ((b.rend > a.rend) ? -1 : 0));
             
-                    let WORArray = [];
-            
-                    if(winOrLose){
-                        for(let i = 0; i < 5; i++){
-                            WORArray.push(array[i]);
-                        }
-                    } 
-                    else 
-                    {
-                        for(let i = array.length(); i > (array.length() - 5); i--){
-                            WORArray.push(array[i]);
-                        }
-                    }
-                    res.send(WORArray);
-                }, [8000]);
-            }
         });*/
 
 
 
         /// winers and losers esta mockeado hasta que funcione la API
-
+/*
         const mockeoDelOrto = [
             {
                 ticker: "BTC",
@@ -270,7 +269,7 @@ export const getWinnersAndLosers = async (req, res, winOrLose) => {
             }
         }
 
-        res.send(WORArray);
+        res.send(WORArray);*/
 
     } catch (error) {
         console.log(error);
