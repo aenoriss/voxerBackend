@@ -65,6 +65,11 @@ export const getInstruments = async (req, res) => {
                                 volumen: item.marketData["EV"] != null ? item.marketData["EV"] : null,
                             }
                             auxArray.push(objetito); //console.log(getMarketHistory(item.symbol), "locoooo")
+                            
+                            if(item.instrumentId.symbol == "MERV - XMEV - GGAL - 24hs"){
+                                console.log("opaaaaaa")
+                            }
+            
                         }
                     });
                     array2 = auxArray;
