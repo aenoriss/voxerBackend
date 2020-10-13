@@ -19,12 +19,15 @@ export const getCoins = async (req, res) => {
 
         const coins = await response.json();
 
-        for(let i = 0; i < totalCoins; i++){  
-            returnArray.push(coins['Data'][`${i}`]['RAW']);
-        }
 
-        globalCoins = returnArray;
+        coins['Data'].forEach(element => {
+            returnArray.push(element['RAW']);
+        });
+
+
+        
         res.send(returnArray);
+        return returnArray;
 
     } catch (error) {
         console.log(error);
