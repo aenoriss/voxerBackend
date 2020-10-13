@@ -4,8 +4,12 @@ const token = '1ff62accbf7df9289c6f059f0e86d3479bf9138286a87a4d1b97c9ce6bd222a1'
 const totalCoins = 30;
 
 // Devuelve TOP 30 coins.
-
 export const getCoins = async (req, res) => {
+    const r = await fetchCoins(req,res);
+    res.send(r);
+}
+
+const fetchCoins = async (req, res) => {
     try
     {        
         let apiURL = "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=30&tsym=USD";
@@ -21,8 +25,8 @@ export const getCoins = async (req, res) => {
         coins['Data'].forEach(element => {
             returnArray.push(element);
         });
-
-        res.send(returnArray);
+        return returnArray;
+    
 
     } catch (error) {
         console.log(error);
@@ -32,41 +36,36 @@ export const getCoins = async (req, res) => {
     }
 }
 
-
-
 // Devuelve el TOP y BOTTOM 5
 export const getTopAndBottom = async (req, res) => {
     try
-    {
-        if (globalCoins != []) {                           
-            let booleanParam = req.query.booleanParam;
-            let TABArray = [];
+    {            
+        const coins = await fetchCoins(req,res)
+        
+        let booleanParam = req.query.booleanParam;
+        let TABArray = [];
 
-            globalCoins.sort((a, b) => (a['USD']['CHANGEPCTDAY'] > b['USD']['CHANGEPCTDAY']) ? 1 : ((b['USD']['CHANGEPCTDAY'] > a['USD']['CHANGEPCTDAY']) ? -1 : 0));
-            
-            console.log(booleanParam);
+        coins.sort((a, b) => (a["RAW"]['USD']['CHANGEPCTDAY'] > b["RAW"]['USD']['CHANGEPCTDAY']) ? 1 : ((b["RAW"]['USD']['CHANGEPCTDAY'] > a["RAW"]['USD']['CHANGEPCTDAY']) ? -1 : 0));
+        
+        console.log(booleanParam);
 
-            if(booleanParam == 'False'){
-                for(let i = 0; i < 5; i++){
-                    TABArray.push(globalCoins[i]);
-                }
-            } 
-            else 
-            {
-                if(booleanParam == "True"){
-                    for(let j = globalCoins.length - 1; j > (globalCoins.length - 6); j--){
-                        TABArray.push(globalCoins[j]);
-                    }
-                }   
+        if(booleanParam == 'False'){
+            for(let i = 0; i < 5; i++){
+                TABArray.push(coins[i]);
             }
-            res.send(TABArray);        
-        }
+        } 
+        else {
+            for(let j = 0; j < 6; j++){
+                TABArray.push(coins[coins.length - j]);
+            }
+        }   
 
+        res.send(TABArray);        
+    
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            message: 'Error en el getPrices'
+            message: 'Error en el getTopAndBottom'
         });
-    }    
+    }  
 }
-
