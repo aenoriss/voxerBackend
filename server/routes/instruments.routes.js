@@ -1,5 +1,5 @@
 //import { getInstruments, getMarketHistory, getWinnersAndLosers, getWinnersAndLosers } from '../controllers/Instruments.controller';
-import { getCoins, getPrices, getTopAndBottom } from '../controllers/InstrumentController';
+import { getCoins, getTopAndBottom } from '../controllers/InstrumentController';
 import { Router } from 'express';
 
 const router = Router();
@@ -9,7 +9,6 @@ const router = Router();
 //router.get('/winnersAndLosers', getWinnersAndLosers);
 
 router.get('/getTopAndBottom', getTopAndBottom);
-router.get('/getPrices', getPrices);
 router.get('/getCoins', getCoins);
 
 export default router;
