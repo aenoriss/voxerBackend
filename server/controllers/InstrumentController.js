@@ -3,11 +3,13 @@ import fetch from 'node-fetch'
 const token = '1ff62accbf7df9289c6f059f0e86d3479bf9138286a87a4d1b97c9ce6bd222a1'; //Token fijo
 const totalCoins = 30;
 
-var globalCoins = []; // Variable para pasar coins entre endpoints.
-var globalPrices = []; // Variable para pasar prices entre endpoints.
-
 // Devuelve TOP 30 coins.
 export const getCoins = async (req, res) => {
+    const r = await fetchCoins(req, res);
+    res.send(r);
+}
+
+export const fetchCoins = async () => {
     try
     {        
         let apiURL = "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=30&tsym=USD";
@@ -24,9 +26,6 @@ export const getCoins = async (req, res) => {
             returnArray.push(element['RAW']);
         });
 
-
-        
-        res.send(returnArray);
         return returnArray;
 
     } catch (error) {
@@ -41,7 +40,7 @@ export const getCoins = async (req, res) => {
 export const getPrices = async (req, res) => {
     try
     {
-        let coins = globalCoins;        
+        let coins = await fetchCoins();        
         let symbols = [];
         let prices = [];
         
@@ -59,7 +58,6 @@ export const getPrices = async (req, res) => {
             });
             prices.push(await response.json());   
         
-        globalPrices = prices;
         res.send(prices);
 
     } catch (error) {
@@ -105,3 +103,4 @@ export const getTopAndBottom = async (req, res) => {
         });
     }    
 }
+
