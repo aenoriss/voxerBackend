@@ -49,14 +49,14 @@ export const getTopAndBottom = async (req, res) => {
         
         console.log(booleanParam);
 
-        if(booleanParam == 'False'){
-            for(let i = 0; i < 5; i++){
-                TABArray.push(coins[i]);
+        if(booleanParam == 'win'){
+            for(let j = 0; j < 5; j++){
+                TABArray.push(coins[coins.length - j]);
             }
         } 
         else {
-            for(let j = 0; j < 6; j++){
-                TABArray.push(coins[coins.length - j]);
+            for(let i = 0; i < 5; i++){
+                TABArray.push(coins[i]);
             }
         }   
 
