@@ -3,9 +3,6 @@ import fetch from 'node-fetch'
 const token = '1ff62accbf7df9289c6f059f0e86d3479bf9138286a87a4d1b97c9ce6bd222a1'; //Token fijo
 const totalCoins = 30;
 
-var globalCoins = []; // Variable para pasar coins entre endpoints.
-var globalPrices = []; // Variable para pasar prices entre endpoints.
-
 // Devuelve TOP 30 coins.
 export const getCoins = async (req, res) => {
     try
@@ -41,9 +38,11 @@ export const getCoins = async (req, res) => {
 export const getPrices = async (req, res) => {
     try
     {
-        let coins = globalCoins;        
         let symbols = [];
         let prices = [];
+
+        coins = await getCoins()
+        console.log("coins", coins)
         
         coins.forEach(elements => {
             symbols.push(elements['USD']['FROMSYMBOL']);
