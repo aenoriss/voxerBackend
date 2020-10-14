@@ -14,4 +14,4 @@ router.get('/getCoins', getCoins);
 
 export default router;
 
-// Ruta: http://localhost:4000/api/instruments/all
+// Ruta: http://localhost:4000/api/instruments/ 
