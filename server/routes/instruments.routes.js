@@ -9,7 +9,6 @@ const router = Router();
 //router.get('/winnersAndLosers', getWinnersAndLosers);
 
 router.get('/getTopAndBottom', getTopAndBottom);
-router.get('/getPrices', getPrices);
 router.get('/getCoins', getCoins);
 
 export default router;
