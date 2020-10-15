@@ -3,12 +3,7 @@ import fetch from 'node-fetch'
 const token = '1ff62accbf7df9289c6f059f0e86d3479bf9138286a87a4d1b97c9ce6bd222a1'; //Token fijo
 const totalCoins = 30;
 
-// Devuelve TOP 30 coins.
-export const getCoins = async (req, res) => {
-    const r = await fetchCoins(req,res);
-    res.send(r);
-}
-
+// Preguntarle a quiroga que hace
 const fetchCoins = async (req, res) => {
     try
     {        
@@ -21,18 +16,32 @@ const fetchCoins = async (req, res) => {
 
         const coins = await response.json();
 
-
         coins['Data'].forEach(element => {
             returnArray.push(element);
         });
-        return returnArray;
-    
+
+        return returnArray;    
 
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            message: 'Error en el getCoin'
+            message: 'Error en el fetchCoins'
         });
+    }
+}
+
+// Devuelve TOP 30 coins.
+export const getCoins = async (req, res) => {
+    try
+    {
+        const coins = await fetchCoins(req, res);
+        res.send(coins);
+
+    } catch (error) {
+    console.log(error);
+    res.status(500).json({
+        message: 'Error en el getCoins'
+    });
     }
 }
 
@@ -49,15 +58,10 @@ export const getTopAndBottom = async (req, res) => {
         
         console.log(booleanParam);
 
-        if(booleanParam == 'win'){
-            for(let j = 0; j < 5; j++){
-                TABArray.push(coins[coins.length - j]);
-            }
-        } 
-        else {
-            for(let i = 0; i < 5; i++){
-                TABArray.push(coins[i]);
-            }
+        if (booleanParam == 'win'){
+            TABArray.push(...coins.reverse().slice(0, 5));
+        } else {
+            TABArray.push(...coins.slice(coins.length - 1));
         }   
 
         res.send(TABArray);        

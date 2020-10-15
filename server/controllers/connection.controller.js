@@ -1,4 +1,4 @@
-import { dataJSON, simbolosProd } from '../controllers/Instruments.controller'
+import { dataJSON, simbolosProd } from './Instruments.controller'
 import fetch from 'node-fetch'
 
 const base_url_ws = "wss://api.remarkets.primary.com.ar/";
