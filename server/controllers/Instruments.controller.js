@@ -1,4 +1,4 @@
-import { getToken, iniciarRofex, motherofalldata } from '../controllers/connection.controller'
+import { getToken, iniciarRofex, motherofalldata } from './connection.controller'
 import fetch from 'node-fetch'
 
 let dataMarketHistory = [];

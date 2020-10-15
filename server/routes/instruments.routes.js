@@ -1,15 +1,19 @@
-//import { getInstruments, getMarketHistory, getWinnersAndLosers, getWinnersAndLosers } from '../controllers/Instruments.controller';
-import { getCoins, getPrices, getTopAndBottom } from '../controllers/InstrumentController';
+import { getCoins, getTopAndBottom } from '../controllers/InstrumentController';
+import { getAll, add, getById, updateById, deleteById } from '../controllers/UserController';
 import { Router } from 'express';
 
 const router = Router();
 
-//router.get('/all', getInstruments);
-//router.get('/marketHistory', getMarketHistory);
-//router.get('/winnersAndLosers', getWinnersAndLosers);
-
+// Instruments controller
 router.get('/getTopAndBottom', getTopAndBottom);
 router.get('/getCoins', getCoins);
+
+// Users controller
+router.get('/updateUser', updateById);
+router.get('/deleteUser', deleteById);
+router.get('/getAllUsers', getAll);
+router.get('/getUser', getById);
+router.get('/addUser', add);
 
 export default router;
 

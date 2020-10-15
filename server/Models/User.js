@@ -1,4 +1,7 @@
-const User = sequelize.define('User', {
+const Sequelize = require('sequelize');
+const db = require('../Database/connection');
+
+module.exports = db.define('User', {
     userId: {
         type: Sequelize.INTEGER, // Tipo de dato.
         autoIncrement: true,     // ID autoincremental.
@@ -13,11 +16,19 @@ const User = sequelize.define('User', {
         type: Sequelize.STRING,      
         allowNull: false
     },
+    nickName: {
+        type: Sequelize.STRING,      
+        allowNull: false
+    },
     email: {
         type: Sequelize.STRING,      
         allowNull: false
     },
-    DNI: {
+    password: {
+        type: Sequelize.STRING,      
+        allowNull: false
+    },
+    dni: {
         type: Sequelize.STRING,      
         allowNull: false
     },
@@ -26,18 +37,16 @@ const User = sequelize.define('User', {
         allowNull: false,
         defaultValue: Sequelize.NOW
     },
-    birthDay: {
+    birthDate: {
         type: Sequelize.DATE,      
         allowNull: false
     },
     followers: {
         type: Sequelize.INTEGER,      
-        allowNull: false,
-        defaultValue: 0
+        allowNull: false
     },
     following: {
         type: Sequelize.INTEGER,      
-        allowNull: false,
-        defaultValue: 0
+        allowNull: false
     }
   });
