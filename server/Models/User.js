@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const db = require('../Database/connection');
 
-module.exports = db.define('User', {
+const User = db.define('User', {
     userId: {
         type: Sequelize.INTEGER, // Tipo de dato.
         autoIncrement: true,     // ID autoincremental.
@@ -28,10 +28,6 @@ module.exports = db.define('User', {
         type: Sequelize.STRING,      
         allowNull: false
     },
-    dni: {
-        type: Sequelize.STRING,      
-        allowNull: false
-    },
     registerDate: {
         type: Sequelize.DATE,      
         allowNull: false,
@@ -48,5 +44,24 @@ module.exports = db.define('User', {
     following: {
         type: Sequelize.INTEGER,      
         allowNull: false
-    }
+    },
+    salt: {
+        type: Sequelize.STRING,      
+        allowNull: false
+    },
   });
+
+User.addHook( 'beforeCreate' , (user) =>{
+    user.salt = crypto.randomBytes(20).toString('hex')
+    user.password = user.hashPassword(user.password);
+})
+
+User.prototype.hashPassword = function (password) {
+    return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
+};
+
+User.prototype.validPassword = function (password) {
+    return this.password === this.hashPassword(password)
+};
+
+module.exports = User;

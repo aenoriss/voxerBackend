@@ -17,4 +17,4 @@ router.get('/addUser', add);
 
 export default router;
 
-// Ruta: http://localhost:4000/api/instruments/ 
+// Ruta: http://localhost:3000/api/ 
