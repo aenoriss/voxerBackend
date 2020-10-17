@@ -16,25 +16,25 @@ export const getAll = async (req, res) => {
 
 export const add = async (req, res) => {
     try
-    {
+    {        
         await User.create({
-            firstName : req.query.firstName,
-            lastName : req.query.lastName,
-            nickName : req.query.nickName,
-            email : req.query.email,
-            password : req.query.password,
-            dni : req.query.dni,
-            registerDate : req.query.registerDate,
-            birthDate : req.query.birthDay,
-            followers : req.query.followers,
-            following : req.query.following,
+            firstName : req.body.firstName,
+            lastName : req.body.lastName,
+            nickName : req.body.nickName,
+            email : req.body.email,
+            password : req.body.password,
+            registerDate : req.body.registerDate,
+            birthDate : req.body.birthDate,
+            followers : req.body.followers,
+            following : req.body.following,
         })
-        .then(console.log("Usuario añadido con exito."))
+
+        res.send("Usuario añadido con éxito.");
 
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            message: ('Error en el getAll (User): ' + error)
+            message: ('Error en el add (User): ' + error)
         });
     }
 }
@@ -43,7 +43,7 @@ export const getById = async (req, res) => {
     try
     {
         let user = await User.findByPk(req.query.userId);
-
+        console.log(user);
         res.send(user);
 
     } catch (error) {
@@ -59,18 +59,19 @@ export const updateById = async (req, res) => {
     {
         let user = await User.findByPk(req.query.userId);
 
-        user.firstName = req.query.firstName,
-        user.lastName = req.query.lastName,
-        user.nickName = req.query.nickName,
-        user.email = req.query.email,
-        user.password = req.query.password,
-        user.dni = req.query.dni,
-        user.registerDate = req.query.registerDate,
-        user.birthDay = req.query.birthDay,
-        user.followers = req.query.followers,
-        user.following = req.query.following,
+        user.firstName = req.body.firstName,
+        user.lastName = req.body.lastName,
+        user.nickName = req.body.nickName,
+        user.email = req.body.email,
+        user.password = req.body.password,
+        user.registerDate = req.body.registerDate,
+        user.birthDay = req.body.birthDate,
+        user.followers = req.body.followers,
+        user.following = req.body.following,
 
         await user.Save();
+
+        res.send("Usuario actualizado con éxito.");
 
     } catch (error) {
         console.log(error);
@@ -90,6 +91,8 @@ export const deleteById = async (req, res) => {
               userId: user.userId
             }
         });
+
+        res.send("Usuario eliminado con éxito.");
 
     } catch (error) {
         console.log(error);

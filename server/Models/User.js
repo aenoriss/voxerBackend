@@ -28,10 +28,6 @@ module.exports = db.define('User', {
         type: Sequelize.STRING,      
         allowNull: false
     },
-    dni: {
-        type: Sequelize.STRING,      
-        allowNull: false
-    },
     registerDate: {
         type: Sequelize.DATE,      
         allowNull: false,

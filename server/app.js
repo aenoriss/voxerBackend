@@ -3,6 +3,8 @@ import express, { json } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 
+const bodyParser = require('body-parser');
+
 const app = () => {
   const router = express();
   const apiRoutes = express();
@@ -12,7 +14,9 @@ const app = () => {
   apiRoutes 
   .use(morgan('dev'))
   .use(json())
-  .use(cors());
+  .use(cors())
+  .use(bodyParser.urlencoded({extended : false}))
+  .use(bodyParser.json());
 
   apiRoutes.use('/instruments', instrumentsRouter); // Ruta autogenerada
 
