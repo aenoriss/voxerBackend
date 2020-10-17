@@ -3,7 +3,7 @@ const User = require('../Models/User');
 export const getAll = async (req, res) => {
     try
     {
-        let users = await User.findAll;
+        let users = await User.findAll();
         res.send(users);
 
     } catch (error) {
@@ -42,13 +42,7 @@ export const add = async (req, res) => {
 export const getById = async (req, res) => {
     try
     {
-        let user = await User.findAll({
-            where: {
-              userId: req.query.userId
-            }
-        });
-
-        user.
+        let user = await User.findByPk(req.query.userId);
 
         res.send(user);
 
@@ -63,11 +57,7 @@ export const getById = async (req, res) => {
 export const updateById = async (req, res) => {
     try
     {
-        let user = await User.findAll({
-            where: {
-              userId: req.query.userId
-            }
-        });
+        let user = await User.findByPk(req.query.userId);
 
         user.firstName = req.query.firstName,
         user.lastName = req.query.lastName,
@@ -93,11 +83,7 @@ export const updateById = async (req, res) => {
 export const deleteById = async (req, res) => {
     try
     {
-        let user = await User.findAll({
-            where: {
-              userId: req.query.userId
-            }
-        });
+        let user = await User.findByPk(req.query.userId);
 
         await User.destroy({
             where: {

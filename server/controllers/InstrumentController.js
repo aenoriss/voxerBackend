@@ -61,15 +61,10 @@ export const getTopAndBottom = async (req, res) => {
         
         console.log(booleanParam);
 
-        if(booleanParam == 'win'){
-            for(let j = 0; j < 5; j++){
-                TABArray.push(coins[coins.length - j]);
-            }
-        } 
-        else {
-            for(let i = 0; i < 5; i++){
-                TABArray.push(coins[i]);
-            }
+        if (booleanParam == 'win'){
+            TABArray.push(...coins.reverse().slice(0, 5));
+        } else {
+            TABArray.push(...coins.slice(coins.length - 1));
         }   
         console.log(TABArray)
 
