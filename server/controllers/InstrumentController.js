@@ -54,6 +54,9 @@ export const getTopAndBottom = async (req, res) => {
         let booleanParam = req.query.booleanParam;
         let TABArray = [];
 
+        console.log(coins)
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaa")
+
         coins.sort((a, b) => (a["RAW"]['USD']['CHANGEPCTDAY'] > b["RAW"]['USD']['CHANGEPCTDAY']) ? 1 : ((b["RAW"]['USD']['CHANGEPCTDAY'] > a["RAW"]['USD']['CHANGEPCTDAY']) ? -1 : 0));
         
         console.log(booleanParam);
@@ -68,6 +71,7 @@ export const getTopAndBottom = async (req, res) => {
                 TABArray.push(coins[i]);
             }
         }   
+        console.log(TABArray)
 
         res.send(TABArray);        
     
