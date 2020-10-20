@@ -1,5 +1,6 @@
-const Sequelize = require('sequelize');
 const db = require('../Database/connection');
+const Sequelize = require('sequelize');
+const crypto = require('crypto');
 
 const User = db.define('User', {
     userId: {
@@ -45,9 +46,16 @@ const User = db.define('User', {
         type: Sequelize.INTEGER,      
         allowNull: false
     },
-    salt: {
+    level: {
+        type: Sequelize.DOUBLE,      
+        allowNull: false
+    },
+    description: {
         type: Sequelize.STRING,      
         allowNull: false
+    },
+    salt: {
+        type: Sequelize.STRING
     },
   });
 

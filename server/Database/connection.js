@@ -1,12 +1,13 @@
 const Sequelize = require('sequelize');
 
-module.exports = new Sequelize('comunitradeDB', 'postgres', '12345678', {
+const db = new Sequelize('comunitradeDB', 'postgres', '12345678', {
     host: 'localhost',
     dialect: 'postgres',
     operatorsAliases: false,
     define: {
       timestamps: false
-    },
+    },    
+    logging:false,
   
     pool: {
       max: 5,
@@ -15,3 +16,5 @@ module.exports = new Sequelize('comunitradeDB', 'postgres', '12345678', {
       idle: 10000
     }
   });
+
+module.exports = db
