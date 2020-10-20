@@ -54,14 +54,16 @@ export const getTopAndBottom = async (req, res) => {
         let booleanParam = req.query.booleanParam;
         let TABArray = [];
 
-        coins.sort((a, b) => (a["RAW"]['USD']['CHANGEPCTDAY'] > b["RAW"]['USD']['CHANGEPCTDAY']) ? 1 : ((b["RAW"]['USD']['CHANGEPCTDAY'] > a["RAW"]['USD']['CHANGEPCTDAY']) ? -1 : 0));
+        //ordena de menor a mayor
+        coins.sort((a, b) => (a["RAW"]['USD']['CHANGEPCT24HOUR'] > b["RAW"]['USD']['CHANGEPCT24HOUR']) ? 1 : ((b["RAW"]['USD']['CHANGEPCT24HOUR'] > a["RAW"]['USD']['CHANGEPCT24HOUR']) ? -1 : 0));
         
-        console.log(booleanParam);
+        console.log(coins);
 
         if (booleanParam == 'win'){
-            TABArray.push(...coins.reverse().slice(0, 5));
+            TABArray.push(...coins.slice(coins.length - 5)); //trae los winners (ultimos 5)
+            TABArray.reverse();                             //los da vuelta para que el mas alto este primero
         } else {
-            TABArray.push(...coins.slice(coins.length - 1));
+            TABArray.push(...coins.slice(0,5)); //trae los losers (primeros 5)
         }   
 
         res.send(TABArray);        
