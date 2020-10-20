@@ -55,17 +55,18 @@ export const getTopAndBottom = async (req, res) => {
         let TABArray = [];
 
         //ordena de menor a mayor
-        coins.sort((a, b) => (a["RAW"]['USD']['CHANGEPCTDAY'] > b["RAW"]['USD']['CHANGEPCTDAY']) ? 1 : ((b["RAW"]['USD']['CHANGEPCTDAY'] > a["RAW"]['USD']['CHANGEPCTDAY']) ? -1 : 0));
+        coins.sort((a, b) => (a["RAW"]['USD']['CHANGEPCT24HOUR'] > b["RAW"]['USD']['CHANGEPCT24HOUR']) ? 1 : ((b["RAW"]['USD']['CHANGEPCT24HOUR'] > a["RAW"]['USD']['CHANGEPCT24HOUR']) ? -1 : 0));
         
         console.log(coins);
 
         if (booleanParam == 'win'){
             TABArray.push(...coins.slice(coins.length - 5)); //trae los winners (ultimos 5)
+            TABArray.reverse();                             //los da vuelta para que el mas alto este primero
         } else {
             TABArray.push(...coins.slice(0,5)); //trae los losers (primeros 5)
         }   
 
-        res.send(TABArray);        // verificar porque algunos de los winners son 0(segun la APi). No hay otros ganadores? si los hay, porque no los muestra? 
+        res.send(TABArray);        
     
     } catch (error) {
         console.log(error);
