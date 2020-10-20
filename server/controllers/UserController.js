@@ -1,5 +1,4 @@
 const User = require('../Models/User');
-const crypto = require('crypto');
 
 export const getAll = async (req, res) => {
     try
@@ -51,14 +50,14 @@ export const updateById = async (req, res) => {
             where: {
               userId: req.body.userId
             }
-          });
+        });
 
         res.status(201).send();
 
     } catch (error) {
         console.log(error);
         res.status(400).json({
-            message: ('Error en el getById (User): ' + error)
+            message: ('Error en el updateById (User): ' + error)
         });
     }
 }
@@ -79,7 +78,26 @@ export const deleteById = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(400).json({
-            message: ('Error en el getById (User): ' + error)
+            message: ('Error en el deleteById (User): ' + error)
         });
+    }
+}
+
+export const logIn = async (req, res) => {        
+    res.status(200).json({
+        userId: {
+          id : req.user.userId,
+          email : req.user.email
+        },
+        user: req.isAuthenticated()
+    });
+}
+
+export const logOut = async (req, res) => {
+    if(req.isAuthenticated()){
+        req.logOut();
+        res.send(200);
+    } else {
+        res.send(400);
     }
 }
