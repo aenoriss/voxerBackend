@@ -3,7 +3,7 @@ import fetch from 'node-fetch'
 const token = '1ff62accbf7df9289c6f059f0e86d3479bf9138286a87a4d1b97c9ce6bd222a1'; //Token fijo
 const totalCoins = 30;
 
-// Preguntarle a quiroga que hace
+// Obtiene 30 coins localmente.
 const fetchCoins = async (req, res) => {
     try
     {        
@@ -54,16 +54,16 @@ export const getTopAndBottom = async (req, res) => {
         let booleanParam = req.query.booleanParam;
         let TABArray = [];
 
-        //ordena de menor a mayor
+        // Ordena de menor a mayor
         coins.sort((a, b) => (a["RAW"]['USD']['CHANGEPCT24HOUR'] > b["RAW"]['USD']['CHANGEPCT24HOUR']) ? 1 : ((b["RAW"]['USD']['CHANGEPCT24HOUR'] > a["RAW"]['USD']['CHANGEPCT24HOUR']) ? -1 : 0));
         
         console.log(coins);
 
         if (booleanParam == 'win'){
-            TABArray.push(...coins.slice(coins.length - 5)); //trae los winners (ultimos 5)
-            TABArray.reverse();                             //los da vuelta para que el mas alto este primero
+            TABArray.push(...coins.slice(coins.length - 5)); // Trae los winners (ultimos 5)
+            TABArray.reverse();                              // Los da vuelta para que el mas alto este primero
         } else {
-            TABArray.push(...coins.slice(0,5)); //trae los losers (primeros 5)
+            TABArray.push(...coins.slice(0,5)); // Trae los losers (primeros 5)
         }   
 
         res.send(TABArray);        
