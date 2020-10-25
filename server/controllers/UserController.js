@@ -83,7 +83,7 @@ export const deleteById = async (req, res) => {
     }
 }
 
-export const logIn = async (req, res) => {        
+export const logIn = async (req, res) => {   
     res.status(200).json({
         userId: {
           id : req.user.userId,
@@ -91,6 +91,7 @@ export const logIn = async (req, res) => {
         },
         user: req.isAuthenticated()
     });
+
 }
 
 export const logOut = async (req, res) => {

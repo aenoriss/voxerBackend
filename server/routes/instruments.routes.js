@@ -15,10 +15,13 @@ router.get('/getUser', getById);
 router.get('/user', (req, res) =>{ res.send(req.user); });
 
 router.post('/register', add);
-router.post("/login", passport.authenticate("local"), logIn);
+router.post("/login", passport.authenticate("local",
+{            
+failureFlash: true }), logIn);
 router.post("/logout", logOut);
 
 router.put('/updateUser', updateById);
 router.delete('/deleteUser', deleteById);
+
 
 export default router;

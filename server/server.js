@@ -9,6 +9,7 @@ import passport from 'passport';
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
+import flash from 'connect-flash';
 
 const app = express();
 
@@ -23,12 +24,19 @@ app.use(cookieParser());
 // Passport
 app.use(session({
     secret: 'Comunitrade',
+    cookie: { maxAge: 60000 }
 }));
 
-const PORT = process.env.PORT || 4000;
+
+app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 passport.use(
-    new Strategy({usernameField:'email' , passwordField:'password'}, ( email , password , done ) => {
+    new Strategy({usernameField:'email' , passwordField:'password'}, ( email , password , next) => {
+        console.log(email + " " + password ,"adasdasd")
+        
         User.findOne({
             where:{
                 email: email
@@ -36,23 +44,25 @@ passport.use(
         })
         .then(user => {
             if(!user){
-                return done(null , false , { message: 'Usuario no encontrado.'})
+                console.log("NOT FOUND")
+                return next(null , false , { message: 'Usuario no encontrado.'});
             }
             if(!user.validPassword(password)){
-                return done(null , false , { message: 'Contraseña incorrecta.'});
+                console.log("WRONG")
+                return next(null , false , { message: 'Contraseña incorrecta.'});
             }
-            return done(null , user)
+            
+            return next(null , user)
         })
-        .catch(done)
+        .catch(next)
 }));
 
-passport.serializeUser((user, done)=>{
-    done(null,user.userId)
-});
-
-passport.deserializeUser((id, done)=>{
-    User.findByPk(id)
-    .then(user => done(null, user))
+passport.serializeUser(function(user, done) {
+    done(null, user);
+  });
+  
+passport.deserializeUser(function(user, done) {
+    done(null, user);
 });
 
 app.use("/api", instrumentsRouter);
