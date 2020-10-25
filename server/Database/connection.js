@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 
 const db = new Sequelize('comunitradeDB', 'postgres', '12345678', {
-    host: 'localhost',
+  host: 'localhost',
     dialect: 'postgres',
     operatorsAliases: false,
     define: {
