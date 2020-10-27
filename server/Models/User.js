@@ -11,11 +11,11 @@ const User = db.define('User', {
     },
     firstName: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     lastName: {
         type: Sequelize.STRING,      
-        allowNull: false
+        allowNull: true
     },
     nickName: {
         type: Sequelize.STRING,      
@@ -31,28 +31,28 @@ const User = db.define('User', {
     },
     registerDate: {
         type: Sequelize.DATE,      
-        allowNull: false,
+        allowNull: true,
         defaultValue: Sequelize.NOW
     },
     birthDate: {
         type: Sequelize.DATE,      
-        allowNull: false
+        allowNull: true
     },
     followers: {
         type: Sequelize.INTEGER,      
-        allowNull: false
+        allowNull: true
     },
     following: {
         type: Sequelize.INTEGER,      
-        allowNull: false
+        allowNull: true
     },
     level: {
         type: Sequelize.DOUBLE,      
-        allowNull: false
+        allowNull: true
     },
     description: {
         type: Sequelize.STRING,      
-        allowNull: false
+        allowNull: true
     },
     salt: {
         type: Sequelize.STRING
