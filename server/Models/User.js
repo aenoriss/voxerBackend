@@ -51,6 +51,10 @@ const User = db.define('User', {
         type: Sequelize.DOUBLE,  
         defaultValue: 1,    
         allowNull: false
+    },mentor: {
+        type: Sequelize.BOOLEAN,  
+        defaultValue: false,    
+        allowNull: false
     },
     description: {
         type: Sequelize.STRING,      
