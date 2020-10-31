@@ -51,13 +51,18 @@ const User = db.define('User', {
         type: Sequelize.DOUBLE,  
         defaultValue: 1,    
         allowNull: false
-    },mentor: {
+    },
+    mentor: {
         type: Sequelize.BOOLEAN,  
         defaultValue: false,    
         allowNull: false
     },
     description: {
         type: Sequelize.STRING,      
+    },
+    profilePicture: {
+        type: Sequelize.BLOB,  
+        defaultValue: null,   
     },
     salt: {
         type: Sequelize.STRING
