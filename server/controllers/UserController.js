@@ -112,7 +112,7 @@ export const validToken = async (req, res, next) => {
     return res.status(401).send({ auth: false, message: "No token provided" });
   }
   try {
-    const decoded = await jwt.verify(token, "mysecretkey"); //
+    const decoded = await jwt.verify(token, "mysecretkey"); 
     req.userId = decoded.id;
     next();
   } catch (err) {
