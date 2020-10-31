@@ -3,7 +3,6 @@ import fetch from 'node-fetch'
 const token = '1ff62accbf7df9289c6f059f0e86d3479bf9138286a87a4d1b97c9ce6bd222a1'; //Token fijo
 const totalCoins = 30;
 
-// Obtiene 30 coins localmente.
 const fetchCoins = async (req, res) => {
     try
     {        
