@@ -3,86 +3,81 @@ import passport from "passport";
 import jwt from "jsonwebtoken";
 
 export const getAll = async (req, res) => {
-    try
-    {
-        let users = await User.findAll();
-        res.send(users);
+  try {
+    let users = await User.findAll({ attributes: ['userId', 'firstName', 'lastName', 'nickName', 'email', 'level', 'mentor', 'description', 'profilePicture', 'birthDate', 'followers', 'following']});
+    res.send(users);
 
-    } catch (error) {
-        console.log(error);
-        res.status(404).json({
-            message: ('Error en el getAll (User): ' + error)
-        });
-    }
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      message: ('Error en el getAll (User): ' + error)
+    });
+  }
 }
 
 export const add = async (req, res) => {
-    try
-    {        
-        await User.create(req.body)
-        res.status(201).send();
+  try {
+    await User.create(req.body)
+    res.status(201).send();
 
-    } catch (error) {
-        console.log(error);
-        res.status(400).json({
-            message: ('Error en el add (User): ' + error)
-        });
-    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      message: ('Error en el add (User): ' + error)
+    });
+  }
 }
 
 export const getById = async (req, res) => {
-    try
-    {
-        let user = await User.findByPk(req.query.userId);
+  try {
+    let user = await User.findByPk(req.query.userId);
 
-        res.send(user);
+    res.send(user);
 
-    } catch (error) {
-        console.log(error);
-        res.status(404).json({
-            message: ('Error en el getById (User): ' + error)
-        });
-    }
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      message: ('Error en el getById (User): ' + error)
+    });
+  }
 }
 
 export const updateById = async (req, res) => {
-    try
-    {
-        await User.update(req.body , {          //depende lo que le pasen desde el front modifica un valor o todos
-            where: {
-              userId: req.body.userId
-            }
-        });
+  try {
+    await User.update(req.body, {          //depende lo que le pasen desde el front modifica un valor o todos
+      where: {
+        userId: req.body.userId
+      }
+    });
 
-        res.status(201).send();
+    res.status(201).send();
 
-    } catch (error) {
-        console.log(error);
-        res.status(400).json({
-            message: ('Error en el updateById (User): ' + error)
-        });
-    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      message: ('Error en el updateById (User): ' + error)
+    });
+  }
 }
 
 export const deleteById = async (req, res) => {
-    try
-    {
-        let user = await User.findByPk(req.query.userId);
+  try {
+    let user = await User.findByPk(req.query.userId);
 
-        await User.destroy({
-            where: {
-              userId: user.userId
-            }
-        });
+    await User.destroy({
+      where: {
+        userId: user.userId
+      }
+    });
 
-        res.status(201).send();
+    res.status(201).send();
 
-    } catch (error) {
-        console.log(error);
-        res.status(400).json({
-            message: ('Error en el deleteById (User): ' + error)
-        });
-    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      message: ('Error en el deleteById (User): ' + error)
+    });
+  }
 }
 
 export const logIn = (req, res, next) => {
@@ -111,7 +106,7 @@ export const validToken = async (req, res, next) => {
     return res.status(401).send({ auth: false, message: "No token provided" });
   }
   try {
-    const decoded = await jwt.verify(token, "mysecretkey"); 
+    const decoded = await jwt.verify(token, "mysecretkey");
     req.userId = decoded.id;
     next();
   } catch (err) {
@@ -128,10 +123,10 @@ export const me = async (req, res, next) => {
 };
 
 export const logOut = async (req, res) => {
-    if(req.isAuthenticated()){
-        req.logOut();
-        res.send(200);
-    } else {
-        res.send(400);
-    }
+  if (req.isAuthenticated()) {
+    req.logOut();
+    res.send(200);
+  } else {
+    res.send(400);
+  }
 }
