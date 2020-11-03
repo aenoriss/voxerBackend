@@ -101,6 +101,7 @@ export const logIn = (req, res, next) => {
 };
 
 export const validToken = async (req, res, next) => {
+  console.log(req.headers);
   const token = req.headers["x-access-token"];     //Esto es lo que tienen que pasar para usar cosas onda el /me, es el token de "sesion"
   if (!token) {
     return res.status(401).send({ auth: false, message: "No token provided" });

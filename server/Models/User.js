@@ -30,7 +30,7 @@ const User = db.define('User', {
     },
     registerDate: {
         type: Sequelize.DATE,      
-        allowNull: false,
+        allowNull: true,
         defaultValue: Sequelize.NOW
     },
     birthDate: {
