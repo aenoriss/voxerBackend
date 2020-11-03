@@ -30,8 +30,10 @@ export const add = async (req, res) => {
 
 export const getById = async (req, res) => {
   try {
-    let user = await User.findByPk(req.query.userId);
-
+    let user = await User.findAll({
+      limit: 1,
+      attributes: ['userId', 'firstName', 'lastName', 'nickName', 'email', 'level', 'mentor', 'description', 'profilePicture', 'birthDate', 'followers', 'following']}
+    );
     res.send(user);
 
   } catch (error) {
