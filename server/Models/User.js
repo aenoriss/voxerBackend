@@ -31,7 +31,7 @@ const User = db.define('User', {
     },
     registerDate: {
         type: Sequelize.DATE,      
-        allowNull: true,
+        allowNull: false,
         defaultValue: Sequelize.NOW
     },
     birthDate: {
@@ -42,11 +42,11 @@ const User = db.define('User', {
     followers: {
         type: Sequelize.INTEGER,
         defaultValue: 0,     
-        allowNull: true
+        allowNull: false
     },
     following: {
         type: Sequelize.INTEGER,      
-        allowNull: true,
+        allowNull: false,
         defaultValue: 0
     },
     level: {
