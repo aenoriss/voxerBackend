@@ -40,14 +40,14 @@ const User = db.define('User', {
         defaultValue: Sequelize.NOW
     },
     followers: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER,    //esto tiene que ser un array con las id
         defaultValue: 0,     
-        allowNull: false
+        allowNull: true
     },
     following: {
-        type: Sequelize.INTEGER,      
-        allowNull: false,
-        defaultValue: 0
+        type: Sequelize.INTEGER,   //esto tiene que ser un array con las id
+        defaultValue: 0,
+        allowNull: true,
     },
     level: {
         type: Sequelize.DOUBLE,  

@@ -28,7 +28,6 @@ export const add = async (req, res) => {
   }
 }
 
-//['userId', 'firstName', 'lastName', 'nickName', 'email', 'level', 'mentor', 'description', 'profilePicture', 'birthDate', 'followers', 'following']
 export const getById = async (req, res) => {
   try {
     let user = await User.findAll({
