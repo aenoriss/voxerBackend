@@ -31,7 +31,11 @@ export const add = async (req, res) => {
 //['userId', 'firstName', 'lastName', 'nickName', 'email', 'level', 'mentor', 'description', 'profilePicture', 'birthDate', 'followers', 'following']
 export const getById = async (req, res) => {
   try {
-    let user = await User.findByPk(req.query.userId);
+    let user = await User.findAll({
+      limit :1,
+      where: { userId : req.query.userId },
+      attributes : ['userId', 'firstName', 'lastName', 'nickName', 'email', 'level', 'mentor', 'description', 'profilePicture', 'birthDate', 'followers', 'following'],
+    });
 
     res.send(user);
 

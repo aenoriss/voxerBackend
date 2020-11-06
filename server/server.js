@@ -71,7 +71,7 @@ app
 
 app.use(cookieParser());
 
-app.use(flash());
+//app.use(flash());
 
 app.use("/api", instrumentsRouter);
 
