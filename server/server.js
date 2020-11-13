@@ -9,7 +9,6 @@ import passport from "passport";
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import flash from "connect-flash";
 
 const app = express();
 
@@ -66,10 +65,13 @@ passport.deserializeUser(function(user, done) {
 app
   .use(cors())
   .use(morgan("dev"))
+  //.use(express.static('../../public/profilePictures/'))  //en teoria esto deberia dejarte ver la img
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser());
+
+//en teoria esto recibiria la img
 
 //app.use(flash());
 

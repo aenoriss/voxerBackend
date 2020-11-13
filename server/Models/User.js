@@ -25,7 +25,8 @@ const User = db.define('User', {
     },
     email: {
         type: Sequelize.STRING,      
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     password: {
         type: Sequelize.STRING,      
@@ -67,7 +68,7 @@ const User = db.define('User', {
         allowNull: true,   
     },
     profilePicture: {
-        type: Sequelize.BLOB,  
+        type: Sequelize.STRING,   
         defaultValue: null, 
         allowNull: true,  
     },
