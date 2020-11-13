@@ -56,11 +56,11 @@ router.get("/me", validToken, me);
 
 router.post("/logout", logOut);
 
-router.post("/updateProfilePicture", upload.single('profilePicture'), (req, res) => {   //esto mandaria la fot de vuelta 
+router.post("/updateProfilePicture", upload.single('profilePicture'), (req, res) => {   //esto mandaria la dir de la foto
   try {
     console.log(req.file)
     if (!fs.existsSync(dir)){
-      fs.mkdirSync(dir);
+      fs.mkdirSync(dir); // esto es para crear el directorio
   }
     res.send(req.file.path);
   }catch(err) {
