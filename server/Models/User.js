@@ -11,9 +11,13 @@ const User = db.define('User', {
     },
     firstName: {
         type: Sequelize.STRING,
+        defaultValue: null,
+        allowNull: true,
     },
     lastName: {
-        type: Sequelize.STRING,   
+        type: Sequelize.STRING, 
+        defaultValue: null,
+        allowNull: true,     
     },
     nickName: {
         type: Sequelize.STRING,      
@@ -21,7 +25,8 @@ const User = db.define('User', {
     },
     email: {
         type: Sequelize.STRING,      
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     password: {
         type: Sequelize.STRING,      
@@ -29,19 +34,23 @@ const User = db.define('User', {
     },
     registerDate: {
         type: Sequelize.DATE,      
+        allowNull: false,
         defaultValue: Sequelize.NOW
     },
     birthDate: {
         type: Sequelize.DATE, 
+        allowNull: false,
         defaultValue: Sequelize.NOW
     },
     followers: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0,     
+        type: Sequelize.ARRAY(Sequelize.INTEGER),   //array con las id de los que siguen al user
+        defaultValue: [],     
+        allowNull: true
     },
     following: {
-        type: Sequelize.INTEGER,      
-        defaultValue: 0
+        type: Sequelize.ARRAY(Sequelize.INTEGER),   //array con las id de los que sigue el user
+        defaultValue: [],
+        allowNull: true,
     },
     level: {
         type: Sequelize.DOUBLE,  
@@ -54,11 +63,14 @@ const User = db.define('User', {
         allowNull: false
     },
     description: {
-        type: Sequelize.STRING, 
+        type: Sequelize.STRING,
+        defaultValue: null,
+        allowNull: true,   
     },
     profilePicture: {
-        type: Sequelize.BLOB,
-        defaultValue: null,   
+        type: Sequelize.STRING,   
+        defaultValue: null, 
+        allowNull: true,  
     },
     salt: {
         type: Sequelize.STRING

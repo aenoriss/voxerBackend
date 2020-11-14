@@ -2,9 +2,10 @@ const User = require('../Models/User');
 import passport from "passport";
 import jwt from "jsonwebtoken";
 
+
 export const getAll = async (req, res) => {
   try {
-    let users = await User.findAll({ attributes: ['userId', 'firstName', 'lastName', 'nickName', 'email', 'level', 'mentor', 'description', 'profilePicture', 'birthDate', 'followers', 'following']});
+    let users = await User.findAll({ attributes: ['userId', 'firstName', 'lastName', 'nickName', 'email', 'level', 'mentor', 'description', 'profilePicture', 'birthDate', 'followers', 'following', 'profilePicture'] });
     res.send(users);
 
   } catch (error) {
@@ -28,10 +29,13 @@ export const add = async (req, res) => {
   }
 }
 
-//['userId', 'firstName', 'lastName', 'nickName', 'email', 'level', 'mentor', 'description', 'profilePicture', 'birthDate', 'followers', 'following']
 export const getById = async (req, res) => {
   try {
-    let user = await User.findByPk(req.query.userId);
+    let user = await User.findAll({
+      limit: 1,
+      where: { userId: req.query.userId },
+      attributes: ['userId', 'firstName', 'lastName', 'nickName', 'email', 'level', 'mentor', 'description', 'profilePicture', 'birthDate', 'followers', 'following', 'profilePicture'],
+    });
 
     res.send(user);
 
