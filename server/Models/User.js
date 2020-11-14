@@ -11,10 +11,9 @@ const User = db.define('User', {
     },
     firstName: {
         type: Sequelize.STRING,
-        allowNull: true,
     },
     lastName: {
-        type: Sequelize.STRING,      
+        type: Sequelize.STRING,   
     },
     nickName: {
         type: Sequelize.STRING,      
@@ -30,7 +29,6 @@ const User = db.define('User', {
     },
     registerDate: {
         type: Sequelize.DATE,      
-        allowNull: true,
         defaultValue: Sequelize.NOW
     },
     birthDate: {
@@ -40,11 +38,9 @@ const User = db.define('User', {
     followers: {
         type: Sequelize.INTEGER,
         defaultValue: 0,     
-        allowNull: false
     },
     following: {
         type: Sequelize.INTEGER,      
-        allowNull: false,
         defaultValue: 0
     },
     level: {
@@ -58,10 +54,10 @@ const User = db.define('User', {
         allowNull: false
     },
     description: {
-        type: Sequelize.STRING,      
+        type: Sequelize.STRING, 
     },
     profilePicture: {
-        type: Sequelize.BLOB,  
+        type: Sequelize.BLOB,
         defaultValue: null,   
     },
     salt: {
