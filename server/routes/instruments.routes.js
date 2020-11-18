@@ -58,11 +58,26 @@ router.post("/logout", logOut);
 
 router.post("/updateProfilePicture", upload.single('profilePicture'), (req, res) => {   //esto mandaria la dir de la foto
   try {
-    console.log(req.file)
+
     if (!fs.existsSync(dir)){
       fs.mkdirSync(dir); // esto es para crear el directorio
   }
-    res.send(req.file.path);
+
+  let imgUrl = req.file.path
+  console.log("imgUrl1",imgUrl)
+
+  imgUrl = imgUrl.replace("public/","");
+  console.log("imgUrl2",imgUrl)
+
+
+  let saveImage = {}
+  saveImage.body = {userId:req.body.userId, profilePicture:imgUrl}
+
+  updateById(saveImage, res).then(response => {
+      console.log("UPDATED?", response);
+  });
+
+res.send(imgUrl);
   }catch(err) {
     res.send(400);
   }

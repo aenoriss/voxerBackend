@@ -48,6 +48,7 @@ export const getById = async (req, res) => {
 }
 
 export const updateById = async (req, res) => {
+  console.log("USER REQ", req)
   try {
     await User.update(req.body, {          //depende lo que le pasen desde el front modifica un valor o todos
       where: {

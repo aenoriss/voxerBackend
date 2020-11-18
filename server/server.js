@@ -12,6 +12,8 @@ import cors from "cors";
 
 const app = express();
 
+let  path = require('path');
+
 app.use(passport.initialize());
 
 passport.use(
@@ -70,6 +72,9 @@ app
   .use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser());
+
+app.use(express.static(path.resolve('./public')));
+
 
 //en teoria esto recibiria la img
 
