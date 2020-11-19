@@ -1,10 +1,8 @@
-import Comment from "./Comments"
-
 const db = require('../Database/connection');
 const Sequelize = require('sequelize');
 
-const VoxPosts = db.define('VoxPosts', {
-    postId: {
+const VoxComments = db.define('VoxComments', {
+    commentId: {
         type: Sequelize.INTEGER, // Tipo de dato.
         autoIncrement: true,     // ID autoincremental.
         primaryKey: true,        // Primary Key set.
@@ -22,8 +20,4 @@ const VoxPosts = db.define('VoxPosts', {
     },
   });
 
-VoxPosts.hasMany(Comment, { as: "comments" });
-Comment.belongsTo(VoxPosts, {
-});
-
-module.exports = VoxPosts;
+module.exports = VoxComments;

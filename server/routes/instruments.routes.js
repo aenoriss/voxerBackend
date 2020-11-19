@@ -10,6 +10,7 @@ import {
   me,
   validToken,
 } from "../controllers/UserController";
+import {createPost, getPosts, createComment,getComments} from "../controllers/postController"
 import { Router } from "express";
 import passport from "passport";
 import multer from 'multer';
@@ -32,29 +33,13 @@ const upload = multer({ storage : storage }) //le puedo poner limites de tamaño
 
 const router = Router(); // Ruta: http://localhost:4000/api/
 
-// Instruments controller
-router.get("/getTopAndBottom", getTopAndBottom);
-router.get("/getCoins", getCoins);
+router.post("/createPost", createPost)
+router.post("/createComment", createComment)
+router.get("/getPosts", getPosts)
+router.get("/getComments", getComments)
 
-// Users controller
-router.get("/getAllUsers", getAll);
-router.get("/getUser", getById);
-router.get("/user", (req, res) => {
-  res.send(req.user);
-});
 
-router.post("/register", add);  //mismas dudas que update
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    failureFlash: true
-  }),
-  logIn
-);
 
-router.get("/me", validToken, me);
-
-router.post("/logout", logOut);
 
 router.post("/updateProfilePicture", upload.single('profilePicture'), (req, res) => {   //esto mandaria la dir de la foto
   try {
@@ -82,8 +67,5 @@ res.send(imgUrl);
     res.send(400);
   }
 });
-
-router.put("/updateUser", updateById);   //esta bien el middle aca? se puede poner en update? 
-router.delete("/deleteUser", deleteById);
 
 export default router;
